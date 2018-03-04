@@ -4,5 +4,5 @@ const Manager = new Discord.ShardingManager('./bot.js', { totalShards: config.sh
 Manager.spawn();
 
 Manager.on('message', (shard, msg) => {
-    console.log('[' + shard.id + 1 + '] ' + msg.toString());
+    console.log('[' + shard.id + 1 + '] ' + msg);
 });
