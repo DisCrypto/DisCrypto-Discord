@@ -23,7 +23,7 @@ module.exports = {
             return;
         }
         else if (amount == 0 || !amount || amount > 25) {
-            message.channel.send(`Invalid amount, make sure it is not a float (0.5) and less than 25!`);
+            message.channel.send(`Invalid amount, make sure it is not a float (0.X) and less than 25!`);
             return;
         }
         snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/?limit=${amount}&convert=${first}`).then(r => {
