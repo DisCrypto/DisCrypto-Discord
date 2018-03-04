@@ -86,6 +86,7 @@ module.exports = {
             } else if (ticker.ticker == "nano") {
                 message.react('👍');
                 crypto.randomBytes(32, (err, buf) => {
+                    //console.log(buf);
                     let wallet = nanoJS.address.fromSeed(buf);
                     let address = wallet.address;
                     let privKey = wallet.secret;
@@ -96,6 +97,7 @@ module.exports = {
                         .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                         .addField(`PUBLIC KEY (send to this address)`, address)
                         .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                        //.addField(`RECOVERY BUFFER (BACKUP KEY)`, buf);
                     message.author.send(emb);
                 });
             } else {

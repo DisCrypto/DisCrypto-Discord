@@ -413,18 +413,28 @@ module.exports = bot => {
         return false;
     };
 
-    bot.startGameCycle = function() {
+
+
+    bot.startGameCycle = async function() {
+        async function getRand(count) {
+            return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * 2}&limit=1`);
+        }
+        let c = await getRand(2);
+        let data = c.body[0];
+        console.log(data);
         bot.user.setPresence({
             game: {
-                name: bot.config.games[Math.round(Math.random() * (bot.config.games.length - 1))] + ' | @' + bot.user.username + ' What\'s your prefix?',
-                type: 0,
+                name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                type: 3,
             },
         });
-        setInterval(() => {
+        setInterval(async () => {
+            let c = await getRand(2);
+            let data = c.body[0];
             bot.user.setPresence({
                 game: {
-                    name: bot.config.games[Math.round(Math.random() * (bot.config.games.length - 1))] + ' | @' + bot.user.username + ' What\'s your prefix?',
-                    type: 0,
+                    name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                    type: 3,
                 },
             });
         }, 300000);
