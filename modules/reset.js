@@ -19,16 +19,13 @@ module.exports = {
             }, 1000);
         } else if (msg.args[0] == "global") {
             await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting...');
-            setTimeout(() => {
-                bot.shard.broadcastEval('process.exit(0)');
-            }, 1000);
+            execSync(`pm2 restart start.js`);
             return null;
         } else if (msg.args[0] == "git") {
             await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting to git pull...');
             execSync(`git pull origin master`);
-            bot.shard.broadcastEval('process.exit(0)').then(() => {
-                msg.channel.send(`Resetted and pulled!`);
-            }).catch(err => {msg.reply(`Error: ${err.stack}`);});
+            execSync(`pm2 restart start.js`);
+            msg.channel.send(`Resetted and pulled!`);
             return null;
         } else if (msg.args[0] == "pull") {
             await msg.channel.send('Pulling from git...');
