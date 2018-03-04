@@ -1,3 +1,4 @@
+const {exec, execSync} = require('child_process');
 module.exports = {
     name: 'restart',
     type: 'owner',
@@ -5,6 +6,7 @@ module.exports = {
     permission: 6,
     help: 'Restarts the bot.',
     main: async function(bot, msg) {
+        console.log(`called`);
         if (msg.args[0] == null || msg.args[0] == "local") {
             if (!bot.shard) {
                 msg.channel.send(':wave: ' + bot.user.username + ' is restarting...');
@@ -17,30 +19,26 @@ module.exports = {
             }, 1000);
         } else if (msg.args[0] == "global") {
             await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting...');
-
             setTimeout(() => {
                 bot.shard.broadcastEval('process.exit(0)');
             }, 1000);
             return null;
         } else if (msg.args[0] == "git") {
             await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting to git pull...');
-
-            setTimeout(() => {
-                bot.shard.broadcastEval(`git pull`).then(()=> {
-                    bot.shard.broadcastEval('process.exit(0)').then(() => {
-                        msg.channel.send(`Resetted and pulled!`);
-                    }).catch(err => {msg.reply(`Error`); console.error(err);});
-                }).catch(err => {msg.reply(`Error`); console.error(err);});
-            }, 1000);
+            execSync(`git pull origin master`);
+            bot.shard.broadcastEval('process.exit(0)').then(() => {
+                msg.channel.send(`Resetted and pulled!`);
+            }).catch(err => {msg.reply(`Error: ${err.stack}`);});
             return null;
         } else if (msg.args[0] == "pull") {
             await msg.channel.send('Pulling from git...');
-
-            setTimeout(() => {
-                bot.shard.broadcastEval(`git pull`).then(()=> {
-                    msg.channel.send(`Pulled!`);
-                }).catch(err => {msg.reply(`Error`); console.error(err);});
-            }, 1000);
+            exec(`git pull origin master`, (err, stdout, stderr) =>{
+                if (err || stderr) {
+                    err ? msg.channel.send(err) : msg.channel.send(stderr);
+                } else {
+                    msg.channel.send(`Success!\n\`\`\`${stdout}\`\`\``);
+                }
+            });
             return null;
         } else {
             msg.channel.send(`Invalid type`);

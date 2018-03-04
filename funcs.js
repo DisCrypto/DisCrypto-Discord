@@ -73,21 +73,20 @@ module.exports = bot => {
         db.serialize(() => {
             db.run(`CREATE TABLE IF NOT EXISTS servers (
 					id VARCHAR(25) PRIMARY KEY,
-					prefix VARCHAR(10),
-					announcementChannel VARCHAR(25)
+					prefix VARCHAR(10)
 					)`);
             bot.guilds.forEach(guild => {
                 try {
                     if (guild.channels.array() && guild.channels.array()[0]) {
                         db.run(`INSERT OR IGNORE INTO servers VALUES (
 								"${guild.id}",
-								"${config.prefix}",
-								"${guild.channels.array()[0].id}")`);
+								"${config.prefix}"
+              )`);
                     } else {
                         db.run(`INSERT OR IGNORE INTO "servers" VALUES (
                             "${guild.id}",
-                            "${config.prefix}",
-                            "none")`);
+                            "${config.prefix}"
+                            )`);
                     }
                 } catch (err) {
                     console.log(err.stack);
@@ -106,8 +105,8 @@ module.exports = bot => {
     bot.addServer = function(guild) {
         db.run(`INSERT OR IGNORE INTO servers VALUES (
 				"${guild.id}",
-				"${bot.config.prefix}",
-				"${guild.channels.array()[0].id}")`);
+				"${bot.config.prefix}"
+				)`);
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
