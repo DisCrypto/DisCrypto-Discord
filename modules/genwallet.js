@@ -12,7 +12,7 @@ module.exports = {
     help: 'Learn about a coin!',
     main: async function (bot, message) {
         if (message.args.length < 1) {
-            await message.channel.send(`Invalid arguments!`);
+            await message.channel.send(`Invalid arguments, please provide a coin to generate for!`);
             return;
         } else {
             let ticker = bot.getTicker(message.args[0]);
@@ -88,7 +88,3 @@ module.exports = {
         }
     }
 };
-function jsUcfirst(string)
-{
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}

@@ -20,7 +20,7 @@ module.exports = {
             message.channel.send(`Invalid arguments!`);
             return;
         }
-        snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/${first.name.toLowerCase()}/?convert=${second.ticker.toLowerCase()}`).then(r => {
+        snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/${first.name.toLowerCase()}/?convert=${second.ticker.toLowerCase()}`).then(r => {
             let data = r.body[0];
             let conversion = data[`price_${second.ticker}`];
             let emb = new Discord.RichEmbed();
@@ -28,7 +28,11 @@ module.exports = {
                 .setColor(`#00FF00`)
                 .setDescription(`\n\n**${amount} ${jsUcfirst(first.name)}**\n\nis equal to\n\n**${amount * conversion} ${jsUcfirst(second.name)}**`);
             message.channel.send(emb);
-        });
+        })
+            .catch(err => {
+                message.channel.send(`Oh no! We had an error! Try again!`);
+                console.error(err);
+            });
     }
 };
 function jsUcfirst(string)
