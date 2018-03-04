@@ -28,7 +28,7 @@ module.exports = {
             setTimeout(() => {
                 bot.shard.broadcastEval(`git pull`).then(()=> {
                     bot.shard.broadcastEval('process.exit(0)').then(() => {
-                        message.channel.send(`Resetted and pulled!`);
+                        msg.channel.send(`Resetted and pulled!`);
                     }).catch(err => {msg.reply(`Error`); console.error(err);});
                 }).catch(err => {msg.reply(`Error`); console.error(err);});
             }, 1000);
