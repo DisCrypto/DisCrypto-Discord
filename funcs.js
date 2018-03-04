@@ -409,7 +409,7 @@ module.exports = bot => {
                 bot.log('Console bound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
             }
         });
-        if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
+        //if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
     };
 
     bot.webhook = function(header, text, color) {

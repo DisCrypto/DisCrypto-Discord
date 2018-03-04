@@ -38,7 +38,7 @@ readdir('./events/', (err, files) => {
     });
     bot.log(`Events loaded!`);
 });
-
+if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
 if (bot.config.token) bot.login(bot.config.token);
 else if (process.env.TOKEN) bot.login(process.env.TOKEN);
 else console.log('no token provided');
