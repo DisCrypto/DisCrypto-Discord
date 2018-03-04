@@ -21,7 +21,7 @@ module.exports = {
             console.log((res.body[0].market_cap_usd / res.body[0].market_cap_usd));
             let emb = new Discord.RichEmbed()
                 .setTitle(`ETH/BTC Flippening`)
-                .setDescription(`The Flippening tis where Ethereum overtakes Bitcoin as #1 in Market Cap. \n \nCurrently Ethereum is **${percent}%** along the way to overtaking BTC.\n\nEthereum Market Cap: **$${addCommas(res.body[1].market_cap_usd)}**\n\nBitcoin Market Cap: **$${addCommas(res.body[0].market_cap_usd)}**`)
+                .setDescription(`The Flippening is where Ethereum overtakes Bitcoin as #1 in Market Cap. \n \nCurrently Ethereum is **${percent}%** along the way to overtaking BTC.\n\nEthereum Market Cap: **$${addCommas(res.body[1].market_cap_usd)}**\n\nBitcoin Market Cap: **$${addCommas(res.body[0].market_cap_usd)}**`)
                 .setColor(`ORANGE`)
                 .attachFile(`./data/icons/flippening.jpg`)
                 .setThumbnail(`attachment://flippening.jpg`)
