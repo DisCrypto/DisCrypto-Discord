@@ -1,4 +1,4 @@
-# DisCrypto v1
+<center># DisCrypto v1
 
 [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 
@@ -11,3 +11,4 @@
 Notice: This bot is under the AGPL license, which states that if you use any of its code in any way, shape, or form, you must state changes, link back to this repository, and use the same license on your project. If you do not follow these terms, legal action may be taken to remove your project via the Digital Millenium Copyright Act.
 
 Join our support server at https://discord.gg/8QebTbk for the latest news and information!
+</center>
