@@ -15,7 +15,7 @@ module.exports = {
     usage: 'flippening',
     permission: 1,
     help: 'Check flippening status.',
-    main: async function (client, message) {
+    main: async function (bot, message) {
         snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/?limit=2`).then(res => {
             let percent = Math.trunc((res.body[1].market_cap_usd / res.body[0].market_cap_usd) * 100);
             console.log((res.body[0].market_cap_usd / res.body[0].market_cap_usd));
