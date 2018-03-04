@@ -5,9 +5,7 @@ const unirest = require('unirest');
 const invitelink = /discord(?:app\.com|\.gg)[/invite/]?(?:(?!.*[Ii10OolL]).[a-zA-Z0-9]{5,6}|[a-zA-Z0-9-]{2,32})/g;
 const snekfetch = require('snekfetch');
 const Promise = require('es6-promise').Promise;
-var afkJson = fs.readFileSync('./afk.json'),
-    afk = JSON.parse(afkJson),
-    channel = null,
+let channel = null,
     stdin = process.openStdin(),
     Discord = require('discord.js');
 if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
