@@ -13,7 +13,7 @@ If you need help, feel free to join our support server at https://discord.gg/Xg5
         .setColor(`#00FF00`)
         .setDescription(description);
     bot.addServer(guild);
-    guild.channels.get(guild.channels.filter(c => c.type === 'text').map(c => c.id)[0]).send(emb).catch(err => {
+    guild.channels.get(guild.channels.filter(c => c.type === 'text').map(c => c.id)[0]).send(emb).catch(() => {
         guild.owner.send(emb);
     });
 };

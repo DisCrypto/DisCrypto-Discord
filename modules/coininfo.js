@@ -22,7 +22,7 @@ module.exports = {
                     if (!error && response.statusCode == 200) {
                         var $ = cheerio.load(html);
                         let emb = new Discord.RichEmbed();
-                        $('ul.list-unstyled a').each(function(i, element){
+                        $('ul.list-unstyled a').each(function(){
                             emb.addField($(this).text(), $(this).attr("href"));
                         });
 

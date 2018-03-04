@@ -4,3 +4,9 @@ node_js:
 script:
   - node bot.js --travis
 install: npm install
+notifications:
+  email:
+    recipients:
+      - dajuukes@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always

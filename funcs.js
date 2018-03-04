@@ -2,7 +2,6 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
-const invitelink = /discord(?:app\.com|\.gg)[/invite/]?(?:(?!.*[Ii10OolL]).[a-zA-Z0-9]{5,6}|[a-zA-Z0-9-]{2,32})/g;
 const snekfetch = require('snekfetch');
 const Promise = require('es6-promise').Promise;
 let channel = null,
@@ -363,7 +362,7 @@ module.exports = bot => {
 
     bot.startGameCycle = async function() {
         async function getRand(count) {
-            return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * 2}&limit=1`);
+            return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * count}&limit=1`);
         }
         let c = await getRand(2).catch(err => {console.error(err); return;});
         let data = c.body[0];
