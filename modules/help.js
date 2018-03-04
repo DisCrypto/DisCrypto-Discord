@@ -16,7 +16,7 @@ module.exports = {
             .addField(`🔧 Utility`, '`genwallet [BTC, ETH, LTC, XRP, BCH]` ex: genwallet btc\n`coininfo [coin]` \n`invite`',true)
             .addField(`🎊 Fun`, '`flippening`\n')
             .addField(`🛠 Management Commands`, '`ping`\n`setprefix`\n`shardinfo`', true)
-            .setColor(`GREEN`)
+            .setColor(`GOLD`)
             .setAuthor(bot.user.username, bot.user.avatarURL);
         message.channel.send(emb);
     },
