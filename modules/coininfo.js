@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const cheerio = require('cheerio');
+const request = require('request');
 
 module.exports = {
     name: 'coininfo',
@@ -7,28 +8,33 @@ module.exports = {
     usage: 'coininfo (coin/ticker)',
     permission: 1,
     help: 'Learn about a coin!',
-    main: function (bot, message) {
-        if (message.args.length < 3) {
-            console.log(message.args.length);
-            message.channel.send(`Invalid arguments!`);
+    main: async function (bot, message) {
+        if (message.args.length < 1) {
+            await message.channel.send(`Invalid arguments!`);
             return;
+        } else {
+            let ticker = bot.getTicker(message.args[0]);
+            if (!ticker) {
+                await message.channel.send(`Invalid arguments!`);
+                return;
+            } else {
+                request(`https://coinmarketcap.com/currencies/${ticker.name}`, function (error, response, html) {
+                    if (!error && response.statusCode == 200) {
+                        var $ = cheerio.load(html);
+                        let emb = new Discord.RichEmbed();
+                        $('ul.list-unstyled').each(function(i, element){
+                            console.log($(this).text());
+                            emb.addField($(this).text(), `t`);
+                        });
+
+                        emb.setTitle(`Learn about ${jsUcfirst(ticker.name)}`)
+                            .attachFile(`./data/icons/${ticker.ticker}.png`)
+                            .setThumbnail(`attachment://${ticker.ticker}.png`);
+                        message.channel.send(emb);
+                    }
+                });
+            }
         }
-        let amount = parseFloat(message.args[0]);
-        let first = bot.getTicker(message.args[1].toLowerCase());
-        let second = bot.getTicker(message.args[2].toLowerCase());
-        if (first.failed || second.failed || isNaN(amount)) {
-            message.channel.send(`Invalid arguments!`);
-            return;
-        }
-        snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/${first.name.toLowerCase()}/?convert=${second.ticker.toLowerCase()}`).then(r => {
-            let data = r.body[0];
-            let conversion = data[`price_${second.ticker}`];
-            let emb = new Discord.RichEmbed();
-            emb.setTitle(`${first.ticker.toUpperCase()} to ${second.ticker.toUpperCase()}`)
-                .setColor(`#00FF00`)
-                .setDescription(`\n\n**${amount} ${jsUcfirst(first.name)}**\n\nis equal to\n\n**${amount * conversion} ${jsUcfirst(second.name)}**`);
-            message.channel.send(emb);
-        });
     }
 };
 function jsUcfirst(string)
