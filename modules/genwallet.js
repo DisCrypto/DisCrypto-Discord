@@ -11,7 +11,7 @@ module.exports = {
     type: 'core',
     usage: 'genwallet (BTC/ETH/LTC/XRP/BCH/NANO)',
     permission: 1,
-    help: 'Learn about a coin!',
+    help: 'Generate a wallet for a coin!',
     main: async function (bot, message) {
         if (message.args.length < 1) {
             await message.channel.send(`Invalid arguments, please provide a coin to generate for!`);
