@@ -1,8 +1,8 @@
-# DisCrypto v5
+# DisCrypto v1
 
 [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 
-[![Build Status](https://travis-ci.org/mcao/RoBot.svg?branch=master)](https://travis-ci.org/mcao/RoBot) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f46b67afafbe451e94b76acc3906480a)](https://www.codacy.com/app/mcao/RoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FRCDiscord/RoBot&amp;utm_campaign=Badge_Grade) [![Discord](https://img.shields.io/discord/374405739382439947.svg)](https://discord.gg/8QebTbk)
+[![Build Status](https://travis-ci.org/DaJuukes/RoBot.svg?branch=master)](https://travis-ci.org/mcao/RoBot) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f46b67afafbe451e94b76acc3906480a)](https://www.codacy.com/app/mcao/RoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FRCDiscord/RoBot&amp;utm_campaign=Badge_Grade) [![Discord](https://img.shields.io/discord/374405739382439947.svg)](https://discord.gg/8QebTbk)
 
 [![Discord Bots](https://discordbots.org/api/widget/status/302555306603446283.png)](https://discordbots.org/bot/302555306603446283) [![Discord Bots](https://discordbots.org/api/widget/servers/302555306603446283.png)](https://discordbots.org/bot/302555306603446283) [![Discord Bots](https://discordbots.org/api/widget/lib/302555306603446283.png)](https://discordbots.org/bot/302555306603446283) [![Discord Bots](https://discordbots.org/api/widget/owner/302555306603446283.png)](https://discordbots.org/bot/302555306603446283)
 

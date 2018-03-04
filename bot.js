@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 const bot = new Discord.Client(config.opts);
 bot.config = config;
 require('./funcs.js')(bot);
-//if (bot.config.musicOpts.youtubeKey) require('discord.js-musicbot-addon')(bot, require('./config.json').musicOpts);
 const readdir = require('fs').readdir;
 
 bot.commands = new Discord.Collection();
