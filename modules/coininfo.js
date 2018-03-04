@@ -22,15 +22,16 @@ module.exports = {
                     if (!error && response.statusCode == 200) {
                         var $ = cheerio.load(html);
                         let emb = new Discord.RichEmbed();
-                        $('ul.list-unstyled').each(function(i, element){
-                            console.log($(this).text());
-                            emb.addField($(this).text(), `t`);
+                        $('ul.list-unstyled a').each(function(i, element){
+                            emb.addField($(this).text(), $(this).attr("href"));
                         });
 
                         emb.setTitle(`Learn about ${jsUcfirst(ticker.name)}`)
                             .attachFile(`./data/icons/${ticker.ticker}.png`)
                             .setThumbnail(`attachment://${ticker.ticker}.png`);
                         message.channel.send(emb);
+                    } else {
+                        message.channel.send("invalid coin symbol. try 'btc' or 'eth'");
                     }
                 });
             }
