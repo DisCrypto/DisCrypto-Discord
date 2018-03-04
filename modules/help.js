@@ -12,10 +12,10 @@ module.exports = {
             .setTitle(`DisCrypto Commands`)
             .setThumbnail(bot.user.displayAvatarURL)
             .setDescription(`The prefix for this server is **${prefix}**`)
-            .addField(`💸 Price Info`, '`$(coin)` ex: $btc\n`top (num)` ex: top 5\n`convert (amount) (from) (to)` ex: convert 5 btc xmr',true)
-            .addField(`🔧 Utility`, '`genwallet (BTC, ETH, LTC, XRP, BCH)` ex: genwallet btc',true)
+            .addField(`💸 Price Info`, '`$[coin]` ex: $btc\n`top [num]` ex: top 5\n`convert [amount] [from] [to])` ex: convert 5 btc xmr',true)
+            .addField(`🔧 Utility`, '`genwallet [BTC, ETH, LTC, XRP, BCH]` ex: genwallet btc',true)
             .addField(`🎊 Fun`, '`flippening`\n')
-            .addField(`🛠 Management Commands`, '`ping`\n`shardinfo`\n`setprefix`\n`reload`\n`eval`', true)
+            .addField(`🛠 Management Commands`, '`ping`\n`shardinfo`\n`setprefix`', true)
             .setColor(`GREEN`)
             .setAuthor(bot.user.username, bot.user.avatarURL);
         message.channel.send(emb);
