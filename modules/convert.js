@@ -23,10 +23,11 @@ module.exports = {
         snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/${first.name.toLowerCase()}/?convert=${second.ticker.toLowerCase()}`).then(r => {
             let data = r.body[0];
             let conversion = data[`price_${second.ticker}`];
-            let emb = new Discord.RichEmbed();
-            emb.setTitle(`${first.ticker.toUpperCase()} to ${second.ticker.toUpperCase()}`)
+            let emb = new Discord.RichEmbed()
+                .setTitle(`${first.ticker.toUpperCase()} to ${second.ticker.toUpperCase()}`)
                 .setColor(`#00FF00`)
-                .setDescription(`\n\n**${amount} ${jsUcfirst(first.name)}**\n\nis equal to\n\n**${amount * conversion} ${jsUcfirst(second.name)}**`);
+                .setDescription(`\n\n**${amount} ${jsUcfirst(first.name)}**\n\nis equal to\n\n**${amount * conversion} ${jsUcfirst(second.name)}**`)
+                .setAuthor(bot.user.username, bot.user.avatarURL);
             message.channel.send(emb);
         })
             .catch(err => {

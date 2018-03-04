@@ -28,7 +28,8 @@ module.exports = {
 
                         emb.setTitle(`Learn about ${jsUcfirst(ticker.name)}`)
                             .attachFile(`./data/icons/${ticker.ticker}.png`)
-                            .setThumbnail(`attachment://${ticker.ticker}.png`);
+                            .setThumbnail(`attachment://${ticker.ticker}.png`)
+                            .setAuthor(bot.user.username, bot.user.avatarURL);
                         message.channel.send(emb);
                     } else {
                         message.channel.send("That is not a valid coin name or ticker.");

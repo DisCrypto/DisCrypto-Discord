@@ -8,11 +8,12 @@ module.exports = {
         const Discord = require('discord.js'),
             util = require('util');
 
-        if (msg.author.id === require('../config.json').owner) {
+        if (bot.permLevel(msg)) {
             var code = msg.content;
             var embed = new Discord.RichEmbed()
                 .setFooter(`${msg.author.username}`, `${msg.author.avatarURL}`)
-                .setTimestamp();
+                .setTimestamp()
+                .setAuthor(bot.user.username, bot.user.avatarURL);
             try {
                 let evaled = eval(code);
                 let type = typeof evaled;

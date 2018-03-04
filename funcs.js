@@ -215,7 +215,8 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        if (msg.author.id === bot.config.owner) {
+        console.log(bot.config.owner.indexOf(msg.author.id));
+        if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         } else if (msg.author.id === msg.guild.owner.id) {
             return 5;
@@ -283,7 +284,8 @@ module.exports = bot => {
                         .setTitle(`Price of ${jsUcfirst(t.name)} [${t.ticker.toUpperCase()}]`)
                         .setURL(`https://coinmarketcap.com/currencies/${t.name}`)
                         .setColor(color)
-                        .setThumbnail(`https://raw.githubusercontent.com/cjdowner/cryptocurrency-icons/master/128/color/${t.ticker}.png`)
+                        .attachFile(`./data/icons/${t.ticker}.png`)
+                        .setThumbnail(`attachment://${t.ticker}.png`)
                         .setFooter(`discrypto.dajuukes.codes | @DisCrypto what's your prefix?`)
                         .setDescription(text);
                     msg.channel.send(emb);
@@ -314,11 +316,11 @@ module.exports = bot => {
                             try {
                                 cmd.main(bot, msg);
                             } catch (err) {
-                                msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
+                                msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
                             }
                         }
                     } catch (err) {
-                        msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
+                        msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
                         bot.error(err.stack);
                     }
                 }
@@ -364,7 +366,7 @@ module.exports = bot => {
         async function getRand(count) {
             return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * 2}&limit=1`);
         }
-        let c = await getRand(2);
+        let c = await getRand(2).catch(err => {console.error(err); return;});
         let data = c.body[0];
         bot.user.setPresence({
             game: {
@@ -373,7 +375,7 @@ module.exports = bot => {
             },
         });
         setInterval(async () => {
-            let c = await getRand(2);
+            let c = await getRand(2).catch(err => {console.error(err); return;});
             let data = c.body[0];
             bot.user.setPresence({
                 game: {

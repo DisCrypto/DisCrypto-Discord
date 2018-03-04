@@ -4,3 +4,5 @@ package-lock.json
 node_modules
 data
 .eslintrc.js
+discrypto.pem
+discrypto.ppk

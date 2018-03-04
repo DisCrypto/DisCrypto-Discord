@@ -29,7 +29,8 @@ module.exports = {
                     .setThumbnail(`attachment://btc.png`)
                     .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                     .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
+                    .setAuthor(bot.user.username, bot.user.avatarURL);
                 message.author.send(emb);
             } else if (ticker.ticker == "eth") {
                 message.react('👍');
@@ -42,7 +43,8 @@ module.exports = {
                     .setThumbnail(`attachment://eth.png`)
                     .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                     .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
+                    .setAuthor(bot.user.username, bot.user.avatarURL);
                 message.author.send(emb);
             } else if (ticker.ticker == "ltc") {
                 message.react('👍');
@@ -56,7 +58,8 @@ module.exports = {
                     .setThumbnail(`attachment://ltc.png`)
                     .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                     .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
+                    .setAuthor(bot.user.username, bot.user.avatarURL);
                 message.author.send(emb);
             } else if (ticker.ticker == "bch") {
                 message.react('👍');
@@ -68,7 +71,8 @@ module.exports = {
                     .setThumbnail(`attachment://bch.png`)
                     .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                     .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
+                    .setAuthor(bot.user.username, bot.user.avatarURL);
                 message.author.send(emb);
             } else if (ticker.ticker == "xrp") {
                 message.react('👍');
@@ -96,7 +100,8 @@ module.exports = {
                         .setThumbnail(`attachment://nano.png`)
                         .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                         .addField(`PUBLIC KEY (send to this address)`, address)
-                        .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                        .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
+                        .setAuthor(bot.user.username, bot.user.avatarURL);
                         //.addField(`RECOVERY BUFFER (BACKUP KEY)`, buf);
                     message.author.send(emb);
                 });
