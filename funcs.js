@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./servers.sqlite');
+const db = new sqlite3.Database('./data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const invitelink = /discord(?:app\.com|\.gg)[/invite/]?(?:(?!.*[Ii10OolL]).[a-zA-Z0-9]{5,6}|[a-zA-Z0-9-]{2,32})/g;
@@ -234,63 +234,23 @@ module.exports = bot => {
         }
     };
 
-    bot.processMessage = function(msg) {
+    bot.processMessage = async function(msg) {
         if (channel && msg.channel.id === channel) bot.log(msg.guild.name + ' | ' + msg.channel.name + ' | ' + msg.member.displayName + ' | ' + msg.cleanContent);
 
         if (msg.author.bot) return;
 
-        afkJson = fs.readFileSync('./afk.json');
-        afk = JSON.parse(afkJson);
-        if (afk.length !== 0) {
-            for (let i = 0; i < afk.length; i++) {
-                if (afk[i].id === msg.author.id) {
-                    afk.splice(i, 1);
-                    fs.writeFileSync('./afk.json', JSON.stringify(afk, null, 3));
-                    msg.channel.send(':ok_hand: Welcome back **' + msg.author.username + "**! I've removed your AFK status!")
-                        .then(msg2 => {
-                            setTimeout(() => {
-                                msg2.delete();
-                            }, 20000);
-                        });
-                }
-                if (msg.mentions.users.size > 0 && afk.length !== 0) {
-                    if (msg.content.indexOf(afk[i].id) !== -1 && msg.author.id !== afk[i].id) {
-                        var nick = msg.guild.members.get(afk[i].id).displayName;
-                        msg.channel.send({
-                            embed: new Discord.RichEmbed().setDescription(':robot: **' + nick + '** is AFK: **' + afk[i].reason + '**'),
-                        })
-                            .then(msg2 => {
-                                setTimeout(() => {
-                                    msg2.delete();
-                                }, 20000);
-                            });
-                    }
-                }
+
+        function jsUcfirst(string)
+        {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function addCommas(x) {
+            if (!x) {
+                return "N/A";
+            } else {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
-        }
-
-        if (msg.content.match(invitelink) && this.permLevel(msg) < 2) {
-            this.getCurrentBooleanSetting('inviteLinkDeletion', msg.guild.id).then(setting => {
-                if (setting && msg.deletable) {
-                    msg.delete().then(() => {
-                        msg.reply('this server does not allow invite links! :no_entry_sign:');
-                    });
-                } else if (setting && !msg.deletable) {
-                    msg.guild.owner.send('I tried to delete an invite link in your server, but do not have permissions to!');
-                }
-            });
-        }
-
-        if (msg.mentions.users.array().length > 4) {
-            this.getCurrentBooleanSetting('mentionSpamProtection', msg.guild.id).then(setting => {
-                if (setting && msg.deletable) {
-                    msg.delete().then(() => {
-                        msg.reply("don't mention more than 4 people at once! :no_entry_sign:");
-                    });
-                } else if (setting && !msg.deletable) {
-                    msg.guild.owner.send('I tried to delete some mention spam in your server, but do not have permissions to!');
-                }
-            });
         }
 
         if (msg.isMentioned(bot.user)) {
@@ -306,7 +266,7 @@ module.exports = bot => {
             }
         }
 
-        if (msg.content.startsWith(`$`)) {
+        else if (msg.content.startsWith(`$`)) {
             try {
                 msg.args = msg.content.split(/\s+/g);
                 let newT = msg.args.shift().slice(1).toLowerCase();
@@ -334,51 +294,38 @@ module.exports = bot => {
             } catch (e) {
                 console.error(e);
             }
-        }
+        } else {
+            this.getPrefix(msg).then(prefix => {
+                if (msg.content.startsWith(prefix)) {
+                    try {
+                        msg.args = msg.content.split(/\s+/g);
+                        msg.content = msg.content.substring(msg.content.indexOf(' ') + 1, msg.content.length) || null;
+                        var command = msg.args.shift().slice(prefix.length).toLowerCase();
+                        var cmd = bot.commands.get(command);
+                        // || bot.commands.get(bot.aliases.get(command))
+                        var perms = bot.permLevel(msg);
 
-        function jsUcfirst(string)
-        {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function addCommas(x) {
-            if (!x) {
-                return "N/A";
-            } else {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-        }
-
-        this.getPrefix(msg).then(prefix => {
-            if (msg.content.startsWith(prefix)) {
-                try {
-                    msg.args = msg.content.split(/\s+/g);
-                    msg.content = msg.content.substring(msg.content.indexOf(' ') + 1, msg.content.length) || null;
-                    var command = msg.args.shift().slice(prefix.length).toLowerCase();
-                    var cmd = bot.commands.get(command);
-                    // || bot.commands.get(bot.aliases.get(command))
-                    var perms = bot.permLevel(msg);
-
-                    if (!cmd) {
-                        return;
-                    } else if (perms === 0) {
-                        msg.reply('you are blacklisted from using the bot!');
-                    } else if (perms < cmd.permission) {
-                        msg.reply('you do not have permission to do this!');
-                    } else if (bot.enabled(cmd)) {
-                        bot.logCommand(command, msg.content, msg.author.username, msg.channel.name, msg.guild.name);
-                        try {
-                            cmd.main(bot, msg);
-                        } catch (err) {
-                            msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
+                        if (!cmd) {
+                            return;
+                        } else if (perms === 0) {
+                            msg.reply('you are blacklisted from using the bot!');
+                        } else if (perms < cmd.permission) {
+                            msg.reply('you do not have permission to do this!');
+                        } else if (bot.enabled(cmd)) {
+                            bot.logCommand(command, msg.content, msg.author.username, msg.channel.name, msg.guild.name);
+                            try {
+                                cmd.main(bot, msg);
+                            } catch (err) {
+                                msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
+                            }
                         }
+                    } catch (err) {
+                        msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
+                        bot.error(err.stack);
                     }
-                } catch (err) {
-                    msg.channel.send('Oh no! We encountered an error:\n```' + err.stack + '```');
-                    bot.error(err.stack);
                 }
-            }
-        });
+            });
+        }
     };
 
     bot.getTicker = function (ticker) {
@@ -421,7 +368,6 @@ module.exports = bot => {
         }
         let c = await getRand(2);
         let data = c.body[0];
-        console.log(data);
         bot.user.setPresence({
             game: {
                 name: `#${data.rank} ${data.symbol} $${data.price_usd}`,

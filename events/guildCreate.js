@@ -12,6 +12,8 @@ exports.run = (bot, guild) => {
     emb.setTitle("Thank you for adding me!")
         .setColor(`#00FF00`)
         .setDescription(description);
-
-    guild.defaultChannel.send(emb);
+    bot.addServer(guild);
+    guild.channels.get(guild.channels.filter(c => c.type === 'text').map(c => c.id)[0]).send(emb).catch(err => {
+        guild.owner.send(emb);
+    });
 };
