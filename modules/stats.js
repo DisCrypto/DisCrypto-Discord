@@ -14,10 +14,18 @@ module.exports = {
         const uptime = date.getUTCDate() - 1 + 'd ' + date.getUTCHours() + 'h ' + date.getUTCMinutes() + 'm ' + date.getUTCSeconds() + 's';
         const cpuUsage = await new Promise(res => {osutils.cpuUsage(v=>res(Math.trunc(v*100)));});
 
-
-        const users = await bot.shard.fetchClientValues('users.size').catch(console.error);
-        const channels = await bot.shard.fetchClientValues('channels.size').catch(console.error);
-        const guilds = await bot.shard.fetchClientValues('guilds.size').catch(console.error);
+        let users;
+        await bot.shard.fetchClientValues('users.size').then(u=> {
+            users = u.reduce((a, b) => a + b, 0);
+        }).catch(console.error);
+        let channels;
+        await bot.shard.fetchClientValues('channels.size').then(u=> {
+            channels = u.reduce((a, b) => a + b, 0);
+        }).catch(console.error);
+        let guilds;
+        await bot.shard.fetchClientValues('guilds.size').then(u=> {
+            guilds = u.reduce((a, b) => a + b, 0);
+        }).catch(console.error);
 
         const shardID = bot.shard.id;
         const shardCount = bot.shard.count;
