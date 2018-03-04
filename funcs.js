@@ -80,7 +80,6 @@ module.exports = bot => {
 					)`);
             bot.guilds.forEach(guild => {
                 try {
-                    // console.log(`Inserting ${guild.name} into the database.`);
                     if (guild.channels.array() && guild.channels.array()[0]) {
                         db.run(`INSERT OR IGNORE INTO servers VALUES (
 								"${guild.id}",
@@ -121,7 +120,6 @@ module.exports = bot => {
                     Authorization: bot.config.dbotsorg,
                 })
                 .end(result => {
-                    console.log(result.body);
                     var voters = result.body;
                     for (var i = 0; i < voters.length; i++) {
                         if (voters[i].id === msg.author.id) { resolve(true); }
@@ -318,7 +316,6 @@ module.exports = bot => {
                 }
                 snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/${t.name}?convert=ETH&limit=1`).then(json => {
                     let data = json.body[0];
-                    console.log(data.percent_change_24h.indexOf("-"));
                     let color = (data.percent_change_24h.indexOf("-") > -1) ? "#FF0000" : "#00FF00";
 
                     let text = `\n**Market Cap Rank:** ${data.rank}\n\n**Price USD:** $${data.price_usd}\n**Price BTC:** ${data.price_btc} BTC\n**Price ETH:** ${data.price_eth} ETH`;
@@ -345,7 +342,11 @@ module.exports = bot => {
         }
 
         function addCommas(x) {
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            if (!x) {
+                return "N/A";
+            } else {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
         }
 
         this.getPrefix(msg).then(prefix => {
