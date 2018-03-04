@@ -1,0 +1,28 @@
+{
+  "name": "discrypto",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaJuukes/DisCrypto.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaJuukes/DisCrypto/issues"
+  },
+  "homepage": "https://github.com/DaJuukes/DisCrypto#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "discord.js": "^11.3.0",
+    "es6-promise": "^4.2.4",
+    "moment": "^2.21.0",
+    "moment-duration-format": "^2.2.2",
+    "sqlite3": "^3.1.13",
+    "unirest": "^0.5.1"
+  }
+}
