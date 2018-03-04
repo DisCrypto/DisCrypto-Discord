@@ -3,11 +3,13 @@ const bitcoin = require('bitcoinjs-lib');
 const etherwallet = require('ethers').Wallet;
 const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
+const nanoJS = require('nano-lib');
+const crypto = require('crypto');
 
 module.exports = {
     name: 'genwallet',
     type: 'core',
-    usage: 'genwallet (BTC/ETH/LTC/XRP/BCH)',
+    usage: 'genwallet (BTC/ETH/LTC/XRP/BCH/NANO)',
     permission: 1,
     help: 'Learn about a coin!',
     main: async function (bot, message) {
@@ -81,6 +83,21 @@ module.exports = {
                     .addField(`PUBLIC KEY (send to this address)`, address)
                     .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
                 message.author.send(emb);
+            } else if (ticker.ticker == "nano") {
+                message.react('👍');
+                crypto.randomBytes(32, (err, buf) => {
+                    let wallet = nanoJS.address.fromSeed(buf);
+                    let address = wallet.address;
+                    let privKey = wallet.secret;
+                    let emb = new Discord.RichEmbed()
+                        .setTitle(`New Nano Address`)
+                        .attachFile(`./data/icons/nano.png`)
+                        .setThumbnail(`attachment://nano.png`)
+                        .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
+                        .addField(`PUBLIC KEY (send to this address)`, address)
+                        .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+                    message.author.send(emb);
+                });
             } else {
                 await message.channel.send(`We do not currently support that coin for wallet generation.`);
                 return;

@@ -31,7 +31,7 @@ module.exports = {
                             .setThumbnail(`attachment://${ticker.ticker}.png`);
                         message.channel.send(emb);
                     } else {
-                        message.channel.send("invalid coin symbol. try 'btc' or 'eth'");
+                        message.channel.send("That is not a valid coin name or ticker.");
                     }
                 });
             }

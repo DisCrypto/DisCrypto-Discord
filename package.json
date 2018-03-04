@@ -17,11 +17,17 @@
   },
   "homepage": "https://github.com/DaJuukes/DisCrypto#readme",
   "dependencies": {
+    "bitcoinjs-lib": "^3.3.2",
+    "bitcore-lib-cash": "^0.16.3",
     "cheerio": "^1.0.0-rc.2",
+    "crypto": "^1.0.1",
     "discord.js": "^11.3.0",
     "es6-promise": "^4.2.4",
+    "ethers": "^2.2.6",
     "moment": "^2.21.0",
     "moment-duration-format": "^2.2.2",
+    "nano-lib": "^0.2.1",
+    "ripple-wallet": "^2.0.0",
     "sqlite3": "^3.1.13",
     "unirest": "^0.5.1"
   }
