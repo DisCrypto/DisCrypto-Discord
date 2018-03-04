@@ -4,7 +4,7 @@ module.exports = {
     usage: 'restart',
     permission: 6,
     help: 'Restarts the bot.',
-    main: function(bot, msg) {
+    main: async function(bot, msg) {
         if (msg.args[0] == null || msg.args[0] == "local") {
             if (!bot.shard) {
                 msg.channel.send(':wave: ' + bot.user.username + ' is restarting...');
@@ -16,14 +16,14 @@ module.exports = {
                 process.exit();
             }, 1000);
         } else if (msg.args[0] == "global") {
-            msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting...');
+            await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting...');
 
             setTimeout(() => {
                 bot.shard.broadcastEval('process.exit(0)');
             }, 1000);
             return null;
         } else if (msg.args[0] == "git") {
-            msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting to git pull...');
+            await msg.channel.send(':wave: All shards of ' + bot.user.username + ' are restarting to git pull...');
 
             setTimeout(() => {
                 bot.shard.broadcastEval(`git pull`).then(()=> {
@@ -33,6 +33,17 @@ module.exports = {
                 }).catch(err => {msg.reply(`Error`); console.error(err);});
             }, 1000);
             return null;
+        } else if (msg.args[0] == "pull") {
+            await msg.channel.send('Pulling from git...');
+
+            setTimeout(() => {
+                bot.shard.broadcastEval(`git pull`).then(()=> {
+                    msg.channel.send(`Pulled!`);
+                }).catch(err => {msg.reply(`Error`); console.error(err);});
+            }, 1000);
+            return null;
+        } else {
+            msg.channel.send(`Invalid type`);
         }
     },
 };
