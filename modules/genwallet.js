@@ -5,6 +5,11 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
+const Promise = require('es6-promise');
+function jsUcfirst(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 module.exports = {
     name: 'genwallet',
@@ -18,97 +23,60 @@ module.exports = {
             return;
         } else {
             let ticker = bot.getTicker(message.args[0]);
-            if (ticker.ticker == "btc") {
-                message.react('👍');
-                let keyPair = bitcoin.ECPair.makeRandom();
-                let address = keyPair.getAddress();
-                let privKey = keyPair.toWIF();
-                let emb = new Discord.RichEmbed()
-                    .setTitle(`New Bitcoin Address`)
-                    .attachFile(`./data/icons/btc.png`)
-                    .setThumbnail(`attachment://btc.png`)
-                    .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                    .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
-                    .setAuthor(bot.user.username, bot.user.avatarURL);
-                message.author.send(emb);
-            } else if (ticker.ticker == "eth") {
-                message.react('👍');
-                let wallet = etherwallet.createRandom();
-                let address = wallet.address;
-                let privKey = wallet.privateKey;
-                let emb = new Discord.RichEmbed()
-                    .setTitle(`New Ethereum Address`)
-                    .attachFile(`./data/icons/eth.png`)
-                    .setThumbnail(`attachment://eth.png`)
-                    .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                    .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
-                    .setAuthor(bot.user.username, bot.user.avatarURL);
-                message.author.send(emb);
-            } else if (ticker.ticker == "ltc") {
-                message.react('👍');
-                let litecoin = bitcoin.networks.litecoin;
-                let keyPair = bitcoin.ECPair.makeRandom({ network: litecoin});
-                let address = keyPair.getAddress();
-                let privKey = keyPair.toWIF();
-                let emb = new Discord.RichEmbed()
-                    .setTitle(`New Litecoin Address`)
-                    .attachFile(`./data/icons/ltc.png`)
-                    .setThumbnail(`attachment://ltc.png`)
-                    .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                    .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
-                    .setAuthor(bot.user.username, bot.user.avatarURL);
-                message.author.send(emb);
-            } else if (ticker.ticker == "bch") {
-                message.react('👍');
-                let privKey = new bch.PrivateKey();
-                let address = privKey.toAddress();
-                let emb = new Discord.RichEmbed()
-                    .setTitle(`New Bitcoin Cash Address`)
-                    .attachFile(`./data/icons/bch.png`)
-                    .setThumbnail(`attachment://bch.png`)
-                    .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                    .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
-                    .setAuthor(bot.user.username, bot.user.avatarURL);
-                message.author.send(emb);
-            } else if (ticker.ticker == "xrp") {
-                message.react('👍');
-                let wallet = ripple.generate();
-                let address = wallet.address;
-                let privKey = wallet.secret;
-                let emb = new Discord.RichEmbed()
-                    .setTitle(`New Ripple Address`)
-                    .attachFile(`./data/icons/xrp.png`)
-                    .setThumbnail(`attachment://xrp.png`)
-                    .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                    .addField(`PUBLIC KEY (send to this address)`, address)
-                    .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
-                message.author.send(emb);
-            } else if (ticker.ticker == "nano") {
-                message.react('👍');
-                crypto.randomBytes(32, (err, buf) => {
-                    //console.log(buf);
-                    let wallet = nanoJS.address.fromSeed(buf);
+            let emb = new Discord.RichEmbed()
+                .setTitle(`New ${jsUcfirst(ticker.name)} Paper Wallet`)
+                .attachFile(`./data/icons/${ticker.ticker}.png`)
+                .setThumbnail(`attachment://${ticker.ticker}.png`)
+                .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
+                .setAuthor(bot.user.username, bot.user.avatarURL);
+            let {address, privKey} = await new Promise(async (res) => {
+                if (ticker.ticker == "btc") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    let keyPair = bitcoin.ECPair.makeRandom();
+                    let address = keyPair.getAddress();
+                    let privKey = keyPair.toWIF();
+                    res({address: address, privKey: privKey});
+                } else if (ticker.ticker == "eth") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    let wallet = etherwallet.createRandom();
+                    let address = wallet.address;
+                    let privKey = wallet.privateKey;
+                    res({address: address, privKey: privKey});
+                } else if (ticker.ticker == "ltc") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    let litecoin = bitcoin.networks.litecoin;
+                    let keyPair = bitcoin.ECPair.makeRandom({ network: litecoin});
+                    let address = keyPair.getAddress();
+                    let privKey = keyPair.toWIF();
+                    res({address: address, privKey: privKey});
+                } else if (ticker.ticker == "bch") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    let privKey = new bch.PrivateKey();
+                    let address = privKey.toAddress();
+                    res({address: address, privKey: privKey});
+                } else if (ticker.ticker == "xrp") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    let wallet = ripple.generate();
                     let address = wallet.address;
                     let privKey = wallet.secret;
-                    let emb = new Discord.RichEmbed()
-                        .setTitle(`New Nano Address`)
-                        .attachFile(`./data/icons/nano.png`)
-                        .setThumbnail(`attachment://nano.png`)
-                        .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
-                        .addField(`PUBLIC KEY (send to this address)`, address)
-                        .addField(`PRIVATE KEY (KEEP SECURE)`, privKey)
-                        .setAuthor(bot.user.username, bot.user.avatarURL);
-                        //.addField(`RECOVERY BUFFER (BACKUP KEY)`, buf);
-                    message.author.send(emb);
-                });
-            } else {
-                await message.channel.send(`We do not currently support that coin for wallet generation.`);
-                return;
-            }
+                    res({address: address, privKey: privKey});
+                } else if (ticker.ticker == "nano") {
+                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
+                    crypto.randomBytes(32, (err, buf) => {
+                        //console.log(buf);
+                        let wallet = nanoJS.address.fromSeed(buf);
+                        let address = wallet.address;
+                        let privKey = wallet.secret;
+                        res({address: address, privKey: privKey});
+                    });
+                } else {
+                    await message.channel.send(`We do not currently support that coin for wallet generation.`);
+                    return;
+                }
+            });
+            emb.addField(`PUBLIC KEY (send to this address)`, address)
+                .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
+            message.author.send(emb);
         }
     }
 };
