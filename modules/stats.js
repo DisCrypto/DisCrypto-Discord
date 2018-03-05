@@ -17,7 +17,7 @@ module.exports = {
 
         const date = new Date(bot.uptime);
         const uptime = date.getUTCDate() - 1 + 'd ' + date.getUTCHours() + 'h ' + date.getUTCMinutes() + 'm ' + date.getUTCSeconds() + 's';
-        const cpuUsage = await new Promise(res => {osutils.cpuUsage(v=>res(Math.trunc(v*100)));});
+        const cpuUsage = await new Promise(res => {Math.round(osutils.cpuUsage(v=>res(Math.trunc(v*100))));});
 
         let users;
         await bot.shard.fetchClientValues('users.size').then(u=> {
@@ -49,10 +49,10 @@ module.exports = {
             //owner stats
             const cores = os.cpus().length;
             const speed = os.cpus()[0].speed / 1000;
-            const ram = (os.totalmem() - os.freemem()) / 1024 / 1000000;
+            const ram = (os.totalmem() - os.freemem()) / 1024 / 1000;
             emb.addField(`🖥 CPU Cores`, cores, true)
                 .addField(`🕐 Clockspeed`, speed + " GHz", true)
-                .addField(`💾 Memory Usage`, Math.trunc(ram) + "GB / " + Math.trunc(os.totalmem() / 1024 / 1000000) + "GB", true)
+                .addField(`💾 Memory Usage`, Math.trunc(ram) + "MB / " + Math.trunc(os.totalmem() / 1024 / 1000) + "MB", true)
                 .addField(`:clock9: Uptime`, uptime, true)
                 .addField(`💻 CPU Usage`, cpuUsage + "%", true)
                 .addField(`OS Type`, os.type(), true)
