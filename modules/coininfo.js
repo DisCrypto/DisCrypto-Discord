@@ -5,9 +5,10 @@ const request = require('request');
 module.exports = {
     name: 'coininfo',
     type: 'core',
-    usage: 'coininfo (coin/ticker)',
+    usage: 'coininfo [symbol]',
+    example: 'coininfo btc',
     permission: 1,
-    help: 'Learn about a coin!',
+    help: 'Display important coin information such as their website, block explorers, forums ',
     main: async function (bot, message) {
         if (message.args.length < 1) {
             await message.channel.send(`Invalid arguments!`);

@@ -9,9 +9,10 @@ const crypto = require('crypto');
 module.exports = {
     name: 'genwallet',
     type: 'core',
-    usage: 'genwallet (BTC/ETH/LTC/XRP/BCH/NANO)',
+    usage: 'genwallet [symbol]',
+    example: 'genwallet eth',
     permission: 1,
-    help: 'Generate a wallet for a coin!',
+    help: 'Create a paper wallet where keys will be sent via Direct Message. Only supports BTC/ETH/LTC/XRP/BCH/XRB currently',
     main: async function (bot, message) {
         if (message.args.length < 1) {
             await message.channel.send(`Invalid arguments, please provide a coin to generate for!`);

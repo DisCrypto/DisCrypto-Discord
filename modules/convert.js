@@ -4,9 +4,10 @@ const snekfetch = require('snekfetch');
 module.exports = {
     name: 'convert',
     type: 'core',
-    usage: 'convert (amount) (from) (to)',
+    usage: 'convert [amount] [from_symbol] [to_symbol]',
+    example: 'convert 100 btc lsk',
     permission: 1,
-    help: 'Convert one crypto amount to another.',
+    help: 'Convert currency from one to another. Specific amounts must be given.',
     main: function (bot, message) {
         if (message.args.length < 3) {
             console.log(message.args.length);

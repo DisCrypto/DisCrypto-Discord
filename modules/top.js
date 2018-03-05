@@ -4,9 +4,10 @@ const snekfetch = require('snekfetch');
 module.exports = {
     name: 'top',
     type: 'core',
-    usage: 'top (amt) (fiat/coin)',
+    usage: "top [count]",
+    example: "top 20",
     permission: 1,
-    help: 'See the top cryptos by market cap!',
+    help: 'See the top cryptos by market cap. Limit results by passing count value. Max count is 25.',
     main: function (bot, message) {
         if (message.args.length < 1) {
             console.log(message.args.length);

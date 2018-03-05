@@ -1,7 +1,8 @@
 module.exports = {
     name: 'setprefix',
     type: 'core',
-    usage: 'setprefix <newprefix>',
+    usage: 'setprefix [newprefix]',
+    example: 'setprefix !',
     permission: 4,
     help: 'Sets the prefix for the server.',
     main: function(bot, msg) {
