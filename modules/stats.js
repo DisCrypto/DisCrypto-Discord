@@ -3,6 +3,10 @@ const os = require('os');
 const osutils = require('os-utils');
 const Promise = require('es6-promise'); //seriosly idk why we need this but it isn't recognized otherwise
 
+let helper = {}
+require('./../funcs')(helper);
+
+
 module.exports = {
     name: 'stats',
     type: 'core',

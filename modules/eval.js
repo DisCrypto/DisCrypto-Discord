@@ -1,7 +1,10 @@
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'eval',
     type: 'owner',
-    usage: 'eval <code>',
+    usage: 'eval [code]',
     permission: 6,
     help: 'Allows bot administrators to evaluate code to test the bot.',
     main: function(bot, msg) {

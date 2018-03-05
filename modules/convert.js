@@ -1,6 +1,9 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
 
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'convert',
     type: 'core',
@@ -11,15 +14,13 @@ module.exports = {
     main: function (bot, message) {
         if (message.args.length < 3) {
             console.log(message.args.length);
-            message.channel.send(`Invalid arguments!`);
-            return;
+            return helper.showUsage(this, message);
         }
         let amount = parseFloat(message.args[0]);
         let first = bot.getTicker(message.args[1].toLowerCase());
         let second = bot.getTicker(message.args[2].toLowerCase());
         if (first.failed || second.failed || isNaN(amount)) {
-            message.channel.send(`Invalid arguments!`);
-            return;
+            return helper.showUsage(this, message);
         }
         snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/${first.name.toLowerCase()}/?convert=${second.ticker.toLowerCase()}`).then(r => {
             let data = r.body[0];

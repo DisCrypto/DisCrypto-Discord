@@ -153,6 +153,21 @@ module.exports = bot => {
         );
     };
 
+    bot.showUsage = async function(command, msg) {
+        const prefix = await this.getPrefix(msg)
+
+        let emb = new Discord.RichEmbed()
+
+        emb.addField(prefix + command.usage, command.help)
+        emb.addField("Usage", prefix + command.example)
+
+        emb.setColor(`GOLD`);
+
+        msg.channel.send(emb)
+        return;
+    };
+
+
     bot.setPrefix = function(prefix, guild) {
         db.run('UPDATE servers SET prefix = "' + prefix + '" WHERE id = ' + guild.id);
         return prefix;
