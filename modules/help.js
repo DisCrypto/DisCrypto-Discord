@@ -9,6 +9,7 @@ const buildCommands = function() {
     const commands = {}
 
     commands["$"] = {
+        name: "$",
         usage: "$[coin]",
         example: "$eth",
         help: "Get all price data for a certain coin - always use $ as prefix"
@@ -46,17 +47,20 @@ module.exports = {
         } else {
             // help for all
 
+            let text = `Use ${prefix}help [command] to get more info on a specific command\n\n` +
+                       '' +
+                       '**Core** - `top` `convert` `coininfo` `$` \n' + 
+                       '**Utility** - `genwallet`\n' +
+                       '**Fun** - `flippening`\n' +
+                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n'
+
             let emb = new Discord.RichEmbed()
-                            .setDescription(`The prefix for this server is **${prefix}**`)
+            .addField("Command List", text)
+            .setColor(`GOLD`)
+            .setAuthor(bot.user.username, bot.user.avatarURL);
 
-            for (let commandName in commands) {
-                let command = commands[commandName];
-                emb.addField(prefix + command.usage, command.help);
-            }
-
-            emb.setAuthor(bot.user.username, bot.user.avatarURL);
-            emb.setColor(`GOLD`);
             message.channel.send(emb);
+
         }
 
     },

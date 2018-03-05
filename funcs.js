@@ -154,7 +154,8 @@ module.exports = bot => {
     };
 
     bot.showUsage = async function(command, msg) {
-        const prefix = await this.getPrefix(msg)
+        let prefix = await this.getPrefix(msg)
+        if (command.name === "$") prefix = ""
 
         let emb = new Discord.RichEmbed()
 
