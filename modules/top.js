@@ -1,17 +1,19 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
 
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'top',
     type: 'core',
-    usage: 'top (amt) (fiat/coin)',
+    usage: "top [count]",
+    example: "top 20",
     permission: 1,
-    help: 'See the top cryptos by market cap!',
+    help: 'See the top cryptos by market cap. Limit results by passing count value. Max count is 25.',
     main: function (bot, message) {
         if (message.args.length < 1) {
-            console.log(message.args.length);
-            message.channel.send(`You need to provide an amount!`);
-            return;
+            return helper.showUsage(this, message);
         }
         let amount = parseInt(message.args[0]);
         let first = "usd";

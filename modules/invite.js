@@ -1,10 +1,14 @@
 const Discord = require('discord.js');
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'invite',
     type: 'core',
     usage: 'invite',
+    example: 'invite',
     permission: 1,
-    help: 'Invite the bot!',
+    help: 'Generate support server/bot invite links',
     main: async function (bot, message) {
         console.log(`call`);
         let emb = new Discord.RichEmbed()

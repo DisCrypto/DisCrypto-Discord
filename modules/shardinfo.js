@@ -3,6 +3,10 @@ const { RichEmbed } = require('discord.js');
 const moment = require('moment');
 require('moment-duration-format');
 
+let helper = {}
+require('./../funcs')(helper);
+
+
 module.exports = {
     name: 'shardinfo',
     type: 'core',

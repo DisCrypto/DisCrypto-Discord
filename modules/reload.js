@@ -1,12 +1,15 @@
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'reload',
     type: 'owner',
-    usage: 'reload <commandname>',
+    usage: 'reload [commandname]',
     permission: 6,
     help: 'Reloads a command.',
     main: function(bot, msg) {
         try {
-            if (msg.content === 'reload') return msg.channel.send('Must provide a command name to reload.');
+            if (msg.content === 'reload') return helper.showUsage(this, msg);
             else if (bot.permLevel(msg) != 6) return msg.channel.send('you do not have permission to reload a command!');
             else if (msg.args[0] === 'all') return null;
             delete require.cache[require.resolve(`./${msg.args[0]}.js`)];
