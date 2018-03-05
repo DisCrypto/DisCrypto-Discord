@@ -381,7 +381,7 @@ module.exports = bot => {
                     type: 3,
                 },
             });
-        }, 300000);
+        }, 600000);
     };
 
     bot.awaitConsoleInput = function() {
