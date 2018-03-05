@@ -154,17 +154,17 @@ module.exports = bot => {
     };
 
     bot.showUsage = async function(command, msg) {
-        let prefix = await this.getPrefix(msg)
-        if (command.name === "$") prefix = ""
+        let prefix = await this.getPrefix(msg);
+        if (command.name === "$") prefix = "";
 
-        let emb = new Discord.RichEmbed()
+        let emb = new Discord.RichEmbed();
 
-        emb.addField(prefix + command.usage, command.help)
-        emb.addField("Usage", prefix + command.example)
+        emb.addField(prefix + command.usage, command.help);
+        emb.addField("Usage", prefix + command.example);
 
         emb.setColor(`GOLD`);
 
-        msg.channel.send(emb)
+        msg.channel.send(emb);
         return;
     };
 
@@ -397,7 +397,7 @@ module.exports = bot => {
                     type: 3,
                 },
             });
-        }, 300000);
+        }, 600000);
     };
 
     bot.awaitConsoleInput = function() {

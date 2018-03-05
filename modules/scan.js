@@ -111,6 +111,5 @@ async function getDataFromAddr (arg) {
                 }
             }
         }
-        console.log(obj);
     });
 }
