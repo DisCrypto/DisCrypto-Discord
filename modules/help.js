@@ -47,7 +47,7 @@ module.exports = {
         } else {
             // help for all
 
-            let text = `Use ${prefix}help [command] to get more info on a specific command\n\n` +
+            let text = `**Command List**\n\nUse ${prefix}help [command] to get more info on a specific command\n\n` +
                        '' +
                        '**Core** - `top` `convert` `coininfo` `$` \n' + 
                        '**Utility** - `genwallet`\n' +
@@ -55,11 +55,11 @@ module.exports = {
                        '**Management** - `invite` `ping` `setprefix` `shardinfo`\n'
 
             let emb = new Discord.RichEmbed()
-            .addField("Command List", text)
+            .addField("Commands", text)
             .setColor(`GOLD`)
             .setAuthor(bot.user.username, bot.user.avatarURL);
 
-            message.channel.send(emb);
+            message.channel.send(text);
 
         }
 

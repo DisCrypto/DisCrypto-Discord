@@ -63,7 +63,7 @@ module.exports = {
                     let address = wallet.address;
                     let privKey = wallet.secret;
                     res({address: address, privKey: privKey});
-                } else if (ticker.ticker == "nano") {
+                } else if (ticker.ticker == "nano" || ticker.ticker == "xrb") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     crypto.randomBytes(32, (err, buf) => {
                         //console.log(buf);

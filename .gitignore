@@ -2,7 +2,9 @@ config.json
 package.json
 package-lock.json
 node_modules
-data
+*.sqlite
+.DS_Store
 .eslintrc.js
 discrypto.pem
 discrypto.ppk
+scan.js
