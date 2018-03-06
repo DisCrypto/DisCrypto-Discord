@@ -2,33 +2,6 @@ const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const getCurrencyList = function(callback) {
-    let results = []
-    request(`https://coinmarketcap.com/coins/views/all/`, function (error, response, html) {
-        if (!error && response.statusCode == 200) {
-            var $ = cheerio.load(html);
-
-            $('#currencies-all tr').each(function() {
-                let isHeader = $(this).find("th").length > 0;
-                if (!isHeader) {
-                    let currencyName = $(this).find(".currency-name-container").attr("href").match(/currencies\/(.*)\//)[1]
-                    let currencySymbol = $(this).find(".col-symbol").text().toLowerCase()
-
-                    results.push({
-                        name: currencyName,
-                        symbol: currencySymbol
-                    })
-                }
-            });
-
-            callback(results);
-        } else {
-            console.log("failed to request list of currencies..");
-            callback([]);
-        }
-    });
-}
-
 const getCurrencyInfo = function(name, callback) {
     let data = {};
     request(`https://coinmarketcap.com/currencies/${name}`, function (error, response, html) {
@@ -52,28 +25,28 @@ const getCurrencyInfo = function(name, callback) {
 const performCoinScrape = function(callback) {
     let results = {}
 
-    getCurrencyList(function(list) {
-        console.log("total currencies: " + list.length)
+    let tickers = JSON.parse(fs.readFileSync("./data/tickers.json"))
+    let remaining = Object.keys(tickers).length
 
-        let remaining = list.length
+    for (let tickerSymbol in tickers) {
+        let tickerName = tickers[tickerSymbol]
 
-        list.forEach(function(currency) {
-            getCurrencyInfo(currency.name, function(data) {
-                console.log("processed: " + currency.name);
+        getCurrencyInfo(tickerName, function(data) {
+            console.log("processed: " + tickerSymbol + " : " + tickerName);
 
-                results[currency.symbol] = {
-                    name: currency.name,
-                    data: data
-                }
+            results[tickerSymbol] = {
+                name: tickerName,
+                data: data
+            }
 
-                remaining--;
+            remaining--;
 
-                if (remaining === 0) {
-                    callback(results)
-                }
-            });
-        })
-    })
+            if (remaining === 0) {
+                callback(results)
+            }
+        });
+    }
+
 }
 
 performCoinScrape(function(data){

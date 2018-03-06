@@ -32,7 +32,7 @@ module.exports = {
             } else {
                 let coin = coinInfoMap[ticker.ticker]
                 if (!coin) {
-                    return message.channel.send(`coin information for ${ticker.ticker} is not supported yet`);
+                    return message.channel.send(`coin information for \`${message.args[0]}\` is not supported yet`);
                 }
 
                 let emb = new Discord.RichEmbed();
