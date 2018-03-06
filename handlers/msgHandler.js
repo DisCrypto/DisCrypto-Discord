@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const snekfetch = require('snekfetch');
 
 module.exports = async function(msg, bot, channel) {
     if (channel && msg.channel.id === channel) bot.log(msg.guild.name + ' | ' + msg.channel.name + ' | ' + msg.member.displayName + ' | ' + msg.cleanContent);

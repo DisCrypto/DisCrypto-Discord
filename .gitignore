@@ -8,3 +8,4 @@ node_modules
 discrypto.pem
 discrypto.ppk
 coininfo.json
+scan.js
