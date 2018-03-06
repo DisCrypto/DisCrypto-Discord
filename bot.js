@@ -12,6 +12,7 @@ bot.events = new Discord.Collection();
 
 readdir('./modules/', (err, files) => {
     if (err) throw err;
+    bot.handleMessage = require('./handlers/msgHandler.js');
     bot.log(`Loading ${files.length} commands!`);
     files.forEach(f => {
         try {
