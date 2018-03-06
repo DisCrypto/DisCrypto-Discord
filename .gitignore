@@ -7,3 +7,4 @@ node_modules
 .eslintrc.js
 discrypto.pem
 discrypto.ppk
+scan.js
