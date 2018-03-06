@@ -7,5 +7,5 @@ exports.run = (bot, msg) => {
 
     if (!msg.channel.type === 'text' || !msg.guild) return;
 
-    bot.processMessage(msg);
+    bot.handleMessage(msg, bot, null);
 };
