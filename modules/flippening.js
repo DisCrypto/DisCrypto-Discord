@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
+let helper = {}
+require('./../funcs')(helper);
+
 
 function addCommas(x) {
     if (!x) {
@@ -13,8 +16,9 @@ module.exports = {
     name: 'flippening',
     type: 'core',
     usage: 'flippening',
+    example: 'flippening',
     permission: 1,
-    help: 'Check flippening status.',
+    help: 'Check flippening (ETH Overtaking BTC) status',
     main: async function (bot, message) {
         snekfetch.get(`https://api.coinmarketcap.com/v1/ticker/?limit=2`).then(res => {
             let percent = Math.trunc((res.body[1].market_cap_usd / res.body[0].market_cap_usd) * 100);

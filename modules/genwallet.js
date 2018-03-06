@@ -5,6 +5,9 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
+let helper = {}
+require('./../funcs')(helper);
+
 const Promise = require('es6-promise');
 function jsUcfirst(string)
 {
@@ -14,13 +17,13 @@ function jsUcfirst(string)
 module.exports = {
     name: 'genwallet',
     type: 'core',
-    usage: 'genwallet (BTC/ETH/LTC/XRP/BCH/NANO)',
+    usage: 'genwallet [symbol]',
+    example: 'genwallet eth',
     permission: 1,
-    help: 'Generate a wallet for a coin!',
+    help: 'Create a paper wallet where keys will be sent via Direct Message. Only supports BTC/ETH/LTC/XRP/BCH/XRB currently',
     main: async function (bot, message) {
         if (message.args.length < 1) {
-            await message.channel.send(`Invalid arguments, please provide a coin to generate for!`);
-            return;
+            return helper.showUsage(this, message);
         } else {
             let ticker = bot.getTicker(message.args[0]);
             let emb = new Discord.RichEmbed()
@@ -60,7 +63,7 @@ module.exports = {
                     let address = wallet.address;
                     let privKey = wallet.secret;
                     res({address: address, privKey: privKey});
-                } else if (ticker.ticker == "nano") {
+                } else if (ticker.ticker == "nano" || ticker.ticker == "xrb") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     crypto.randomBytes(32, (err, buf) => {
                         //console.log(buf);

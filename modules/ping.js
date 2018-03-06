@@ -2,6 +2,7 @@ module.exports = {
     name: 'ping',
     type: 'core',
     usage: 'ping',
+    example: 'ping',
     permission: 1,
     help: 'Tests the bot\'s ping time.',
     main: function (client, message) {message.channel.send('Pong!').then(sent => {

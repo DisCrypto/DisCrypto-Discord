@@ -1,23 +1,67 @@
 const Discord = require('discord.js');
+const readdirSync = require('fs').readdirSync;
+let helper = {}
+require('./../funcs')(helper);
+
+
+const buildCommands = function() {
+
+    const commands = {}
+
+    commands["$"] = {
+        name: "$",
+        usage: "$[coin]",
+        example: "$eth",
+        help: "Get all price data for a certain coin - always use $ as prefix"
+    };
+
+    const files = readdirSync('./modules/')
+
+    files.forEach((file) => {
+        var command = require(`./${file}`);
+        if (command.type !== "owner") {
+            commands[command.name] = command
+        }
+    });
+
+    return commands
+}
+
 module.exports = {
     name: 'help',
     type: 'core',
     usage: 'help',
+    example: 'help',
     permission: 1,
-    help: 'List commands.',
+    help: 'Show help.',
     main: async function (bot, message) {
         let prefix = await bot.getPrefix(message);
+        let commands = buildCommands(prefix)
 
-        let emb = new Discord.RichEmbed()
-            .setTitle(`DisCrypto Commands`)
-            .setThumbnail(bot.user.displayAvatarURL)
-            .setDescription(`The prefix for this server is **${prefix}**`)
-            .addField(`💸 Price Info`, '`$[coin]` ex: $btc\n`top [num]` ex: top 5\n`convert [amount] [from] [to])` ex: convert 5 btc xmr',true)
-            .addField(`🔧 Utility`, '`genwallet [BTC, ETH, LTC, XRP, BCH]` ex: genwallet btc\n`coininfo [coin]` \n`invite`',true)
-            .addField(`🎊 Fun`, '`flippening`\n')
-            .addField(`🛠 Management Commands`, '`ping`\n`setprefix`\n`shardinfo`', true)
+        let commandName = message.args[0]
+
+        if (commands[commandName]) {
+            // help for single command
+            let command = commands[commandName]
+            return helper.showUsage(command, message);
+        } else {
+            // help for all
+
+            let text = `**Command List**\n\nUse ${prefix}help [command] to get more info on a specific command\n\n` +
+                       '' +
+                       '**Core** - `top` `convert` `coininfo` `$` \n' + 
+                       '**Utility** - `genwallet`\n' +
+                       '**Fun** - `flippening`\n' +
+                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n'
+
+            let emb = new Discord.RichEmbed()
+            .addField("Commands", text)
             .setColor(`GOLD`)
             .setAuthor(bot.user.username, bot.user.avatarURL);
-        message.channel.send(emb);
+
+            message.channel.send(text);
+
+        }
+
     },
 };

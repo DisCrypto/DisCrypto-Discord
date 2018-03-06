@@ -2,21 +2,23 @@ const Discord = require('discord.js');
 const cheerio = require('cheerio');
 const request = require('request');
 
+let helper = {}
+require('./../funcs')(helper);
+
 module.exports = {
     name: 'coininfo',
     type: 'core',
-    usage: 'coininfo (coin/ticker)',
+    usage: 'coininfo [symbol]',
+    example: 'coininfo btc',
     permission: 1,
-    help: 'Learn about a coin!',
+    help: 'Display important coin information such as their website, block explorers, forums ',
     main: async function (bot, message) {
         if (message.args.length < 1) {
-            await message.channel.send(`Invalid arguments!`);
-            return;
+            return helper.showUsage(this, message);
         } else {
             let ticker = bot.getTicker(message.args[0]);
             if (!ticker) {
-                await message.channel.send(`Invalid arguments!`);
-                return;
+                return helper.showUsage(this, message);
             } else {
                 request(`https://coinmarketcap.com/currencies/${ticker.name}`, function (error, response, html) {
                     if (!error && response.statusCode == 200) {
