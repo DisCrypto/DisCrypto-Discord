@@ -1,9 +1,19 @@
 const Discord = require('discord.js');
 const cheerio = require('cheerio');
 const request = require('request');
+var fs = require('fs');
 
 let helper = {}
 require('./../funcs')(helper);
+
+let coinInfoJsonFile = "./data/coininfo.json"
+
+if (!fs.existsSync(coinInfoJsonFile)) {
+    console.log("\nMissing " + coinInfoJsonFile + " . Run `node ./scripts/scrape_coininfo.js` to populate json file.\n")
+    process.exit(1)
+}
+
+const coinInfoMap = JSON.parse(fs.readFileSync(coinInfoJsonFile))
 
 module.exports = {
     name: 'coininfo',
@@ -20,23 +30,23 @@ module.exports = {
             if (!ticker) {
                 return helper.showUsage(this, message);
             } else {
-                request(`https://coinmarketcap.com/currencies/${ticker.name}`, function (error, response, html) {
-                    if (!error && response.statusCode == 200) {
-                        var $ = cheerio.load(html);
-                        let emb = new Discord.RichEmbed();
-                        $('ul.list-unstyled a').each(function(){
-                            emb.addField($(this).text(), $(this).attr("href"));
-                        });
+                let coin = coinInfoMap[ticker.ticker]
+                if (!coin) {
+                    return message.channel.send(`coin information for ${ticker.ticker} is not supported yet`);
+                }
 
-                        emb.setTitle(`Learn about ${jsUcfirst(ticker.name)}`)
-                            .attachFile(`./data/icons/${ticker.ticker}.png`)
-                            .setThumbnail(`attachment://${ticker.ticker}.png`)
-                            .setAuthor(bot.user.username, bot.user.avatarURL);
-                        message.channel.send(emb);
-                    } else {
-                        message.channel.send("That is not a valid coin name or ticker.");
-                    }
-                });
+                let emb = new Discord.RichEmbed();
+
+                for (let fieldName in coin.data) {
+                    let url = coin.data[fieldName]    
+                    emb.addField(fieldName, url);
+                }
+
+                emb.setTitle(`Learn about ${jsUcfirst(ticker.name)}`)
+                    .attachFile(`./data/icons/${ticker.ticker}.png`)
+                    .setThumbnail(`attachment://${ticker.ticker}.png`)
+                    .setAuthor(bot.user.username, bot.user.avatarURL);
+                message.channel.send(emb);
             }
         }
     }
