@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "9.7.1"
 script:
-  - node bot.js --travis
+  - cd src && node bot.js --travis
 install: npm install
 notifications:
   email:
