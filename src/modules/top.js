@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
 
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 module.exports = {

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const cheerio = require('cheerio');
 const request = require('request');
 
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 module.exports = {
