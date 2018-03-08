@@ -8,7 +8,7 @@ const EtherscanApiKey = require('../config.json').etherScanKey;
 module.exports = {
     scanAndRender: async function(address, msg) {
         let addressType = this.determineAddressType(address);
-        if (!addressType) return Promise.reject({ message: `Invalid address ${address}` });
+        if (!addressType) throw({ message: `Invalid address ${address}` });
 
         let data = await this.scan(address, addressType);
 
@@ -18,18 +18,18 @@ module.exports = {
         this.render(msg, data)
     },
 
-    scan: function(address, addressType) {
+    scan: async function(address, addressType) {
         if (addressType === "account") {
-            return this.getBalanceFromEthereumAddress(address).then(function(balance) {
-                let ether = Web3util.utils.fromWei(balance.toString(), "ether");
-                return Promise.resolve({ result: ether });
-             })
+            let balance = await this.getBalanceFromEthereumAddress(address)
+            let ether = Web3util.utils.fromWei(balance.toString(), "ether");
+            return { result: ether }
         } else if (addressType === "transaction") {
-            return this.getTransactionHashData(address).then(function(result) {
-                return Promise.resolve({ result: result });
-            }).catch(function(err) {
-                return Promise.resolve({ error: err });
-            })
+            try {
+                let result = this.getTransactionHashData(address)
+                return { result: result }
+            } catch(err) {
+                return { error: err }
+            }
         }
 
     },
@@ -46,7 +46,8 @@ module.exports = {
         data = {
             address: "",
             addressType: "account",
-            result: ""
+            result: "",
+            error: ""
         }
     */
     render: function(msg, data) {
