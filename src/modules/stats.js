@@ -1,9 +1,8 @@
 const Discord = require('discord.js');
 const os = require('os');
-const osutils = require('os-utils');
-const Promise = require('es6-promise'); //seriosly idk why we need this but it isn't recognized otherwise
+const osu = require('node-os-utils');
 
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 
@@ -14,23 +13,22 @@ module.exports = {
     permission: 1,
     help: 'Check bot stats.',
     main: async function (bot, message) {
-
         const date = new Date(bot.uptime);
         const uptime = date.getUTCDate() - 1 + 'd ' + date.getUTCHours() + 'h ' + date.getUTCMinutes() + 'm ' + date.getUTCSeconds() + 's';
-        const cpuUsage = await new Promise(res => {Math.round(osutils.cpuUsage(v=>res(Math.trunc(v*100))));});
+        const cpuUsage = await osu.cpu.usage();
 
         let users;
-        await bot.shard.fetchClientValues('users.size').then(u=> {
+        await bot.shard.fetchClientValues('users.size').then(u => {
             users = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
         let channels;
-        await bot.shard.fetchClientValues('channels.size').then(u=> {
+        await bot.shard.fetchClientValues('channels.size').then(u => {
             channels = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
         let guilds;
-        await bot.shard.fetchClientValues('guilds.size').then(u=> {
+        await bot.shard.fetchClientValues('guilds.size').then(u => {
             guilds = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
 
         const shardID = bot.shard.id;
         const shardCount = bot.shard.count;
@@ -49,7 +47,7 @@ module.exports = {
             //owner stats
             const cores = os.cpus().length;
             const speed = os.cpus()[0].speed / 1000;
-            const ram = (os.totalmem() - os.freemem()) / 1024 / 1000;
+            const ram = (process.memoryUsage().heapUsed) / 1024 / 1000;
             emb.addField(`🖥 CPU Cores`, cores, true)
                 .addField(`🕐 Clockspeed`, speed + " GHz", true)
                 .addField(`💾 Memory Usage`, Math.trunc(ram) + "MB / " + Math.trunc(os.totalmem() / 1024 / 1000) + "MB", true)
