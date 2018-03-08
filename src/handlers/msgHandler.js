@@ -54,7 +54,7 @@ module.exports = async function(msg, bot, channel) {
                     .setColor(color)
                     .attachFile(`./data/icons/${t.ticker}.png`)
                     .setThumbnail(`attachment://${t.ticker}.png`)
-                    .setFooter(`discrypto.dajuukes.codes | @DisCrypto what's your prefix?`)
+                    .setFooter(`http://discrypto.xyz | @DisCrypto what's your prefix?`)
                     .setDescription(text);
                 msg.channel.send(emb);
                 return;
