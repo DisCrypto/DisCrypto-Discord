@@ -3,7 +3,8 @@ const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
 const path = require('path');
-const srcDir = path.join(__dirname, '.');
+global.srcRoot = path.resolve(__dirname);
+
 
 const Discord = require('discord.js');
 const bot = new Discord.Client(config.opts);
@@ -16,7 +17,7 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.events = new Discord.Collection();
 
-readdir(srcDir + '/modules/', (err, files) => {
+readdir(srcRoot + '/modules/', (err, files) => {
     if (err) throw err;
     bot.handleMessage = require('./handlers/msgHandler.js');
     bot.log(`Loading ${files.length} commands!`);
@@ -34,7 +35,7 @@ readdir(srcDir + '/modules/', (err, files) => {
     bot.log(`Commands loaded!`);
 });
 
-readdir(srcDir + '/events/', (err, files) => {
+readdir(srcRoot + '/events/', (err, files) => {
     if (err) throw err;
     bot.log(`Loading ${files.length} events!`);
     files.forEach(file => {

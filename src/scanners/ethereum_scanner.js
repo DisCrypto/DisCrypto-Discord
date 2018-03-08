@@ -76,7 +76,7 @@ module.exports = {
             default:
         }
 
-        emb.attachFile(`./data/icons/eth.png`)
+        emb.attachFile(`${srcRoot}/data/icons/eth.png`)
             .setThumbnail(`attachment://eth.png`);
 
         msg.channel.send(emb);

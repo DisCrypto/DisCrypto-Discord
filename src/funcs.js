@@ -1,7 +1,7 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./data/servers.sqlite');
+const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
