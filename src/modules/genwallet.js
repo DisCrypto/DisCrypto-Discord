@@ -24,8 +24,9 @@ module.exports = {
         if (message.args.length < 1) {
             return helper.showUsage(this, message);
         } else {
-            let m = message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
             let ticker = bot.getTicker(message.args[0]);
+            console.log(ticker);
+            let m = message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
 
             let emb = new Discord.RichEmbed()
                 .setTitle(`New ${jsUcfirst(ticker.name)} Paper Wallet`)

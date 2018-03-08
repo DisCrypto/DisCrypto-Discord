@@ -16,8 +16,8 @@ module.exports = {
 
         const date = new Date(bot.uptime);
         const uptime = date.getUTCDate() - 1 + 'd ' + date.getUTCHours() + 'h ' + date.getUTCMinutes() + 'm ' + date.getUTCSeconds() + 's';
-        const cpuUsage = await new Promise(res => {Math.round(osutils.cpuUsage(v=>res(Math.trunc(v*100))));});
-
+        const cpuUsage = await new Promise(res => {Math.round(osutils.cpuUsage(v=>res((v*100).toFixed(2))));});
+        
         let users;
         await bot.shard.fetchClientValues('users.size').then(u=> {
             users = u.reduce((a, b) => a + b, 0);
