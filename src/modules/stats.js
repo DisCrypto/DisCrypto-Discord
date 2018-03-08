@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const os = require('os');
-const osutils = require('os-utils');
+const osu = require('node-os-utils');
 
 let helper = {};
 require('./../funcs')(helper);
@@ -13,11 +13,10 @@ module.exports = {
     permission: 1,
     help: 'Check bot stats.',
     main: async function (bot, message) {
-
         const date = new Date(bot.uptime);
         const uptime = date.getUTCDate() - 1 + 'd ' + date.getUTCHours() + 'h ' + date.getUTCMinutes() + 'm ' + date.getUTCSeconds() + 's';
-        const cpuUsage = await new Promise(res => {Math.round(osutils.cpuUsage(v=>res((v*100).toFixed(2))));});
-        
+        const cpuUsage = await osu.cpu.usage();
+
         let users;
         await bot.shard.fetchClientValues('users.size').then(u=> {
             users = u.reduce((a, b) => a + b, 0);
