@@ -4,9 +4,7 @@ const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
 const Promise = require('es6-promise').Promise;
-let channel = null,
-    stdin = process.openStdin(),
-    Discord = require('discord.js');
+const Discord = require('discord.js');
 if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
 else config = require('./config.json');
 
@@ -237,7 +235,7 @@ module.exports = bot => {
         }, 600000);
     };
 
-        bot.webhook = function(header, text, color) {
+    bot.webhook = function(header, text, color) {
         var request = require('request');
         try {
             var d = {
@@ -347,7 +345,7 @@ module.exports = bot => {
 	 * Logging functions
 	 */
 
-      bot.logCommand = function(command, args, user, channel2, server) {
+    bot.logCommand = function(command, args, user, channel2, server) {
         bot.webhook('Command Executed', `**Command:** ${command}\n**User:** ${user}\n**Arguments:** ${args}\n**Server:** ${server}\n**Channel:** #${channel2}`, '#0000FF');
     };
 
