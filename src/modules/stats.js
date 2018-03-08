@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const os = require('os');
 const osutils = require('os-utils');
 
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 

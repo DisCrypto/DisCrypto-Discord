@@ -15,20 +15,6 @@ module.exports = bot => {
      * Server Related Functions
      */
 
-    bot.fetchGuildSize = function() {
-        return new Promise(
-            resolve => {
-                if (bot.shard) {
-                    bot.shard.fetchClientValues('guilds.size').then(g => {
-                        resolve(g.reduce((prev, val) => prev + val, 0));
-                    }).catch(console.error);
-                } else {
-                    resolve(bot.guilds.size);
-                }
-            }
-        );
-    };
-
     bot.sendServerCount = function() {
         if (bot.config.sendServerCounts) {
             var guilds;
@@ -109,7 +95,7 @@ module.exports = bot => {
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-    bot.checkForUpvote = function(msg) {
+    /*    bot.checkForUpvote = function(msg) {
         return new Promise(resolve => {
             unirest.get(`https://discordbots.org/api/bots/${bot.user.id}/votes`)
                 .headers({
@@ -126,14 +112,14 @@ module.exports = bot => {
                     // Set to false on Stable
                 });
         });
-    };
+    };*/
 
-    bot.promptForUpvote = function(msg, command) {
+    /*  bot.promptForUpvote = function(msg, command) {
         msg.channel.send(`To use the **${command}** command, please go upvote me on discordbots.org! ` +
             `You can do so by visiting the link below, signing in, and clicking upvote! ` +
             `If you have already upvoted, give the bot a few minutes to update its list of voters.\n` +
             `https://discordbots.org/bot/${bot.user.id}`);
-    };
+    };*/
 
     /**
      * Giveme Roles Functions
@@ -168,53 +154,10 @@ module.exports = bot => {
         return;
     };
 
-
     bot.setPrefix = function(prefix, guild) {
         db.run('UPDATE servers SET prefix = "' + prefix + '" WHERE id = ' + guild.id);
         return prefix;
     };
-
-    /**
-     * Server Settings Related Functions
-     */
-
-    bot.setNewValue = function(setting, id, text) {
-        db.run(`UPDATE servers SET ${setting} = "${text}" WHERE id = "${id}"`);
-        return text;
-    };
-
-    bot.setNewBoolValue = function(setting, id, text) {
-        db.run(`UPDATE servers SET ${setting} = ${text} WHERE id = "${id}"`);
-        return text;
-    };
-
-    bot.getCurrentBooleanSetting = function(setting, id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0][setting]);
-            });
-        });
-    };
-
-    bot.getCurrentSetting = function(setting, id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0][setting]);
-            });
-        });
-    };
-
-    bot.getAllSettings = function(id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0]);
-            });
-        });
-    };
-
     /**
 	 * Core message processing functions
 	 */
@@ -270,17 +213,6 @@ module.exports = bot => {
             .setFooter(bot.user.username, bot.user.avatarURL));
     };
 
-    bot.blacklist = function(id) {
-        var blacklistJson = fs.readFileSync('./blacklist.json'),
-            blacklist = JSON.parse(blacklistJson);
-        for (var i = 0; i < blacklist.length; i++) {
-            if (blacklist[i] === id) { return true; }
-        }
-        return false;
-    };
-
-
-
     bot.startGameCycle = async function() {
         async function getRand(count) {
             return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * count}&limit=1`);
@@ -305,34 +237,7 @@ module.exports = bot => {
         }, 600000);
     };
 
-    bot.awaitConsoleInput = function() {
-        stdin.addListener('data', d => {
-            d = d.toString().trim();
-            if (d.startsWith('channels')) {
-                bot.channels.forEach(channel2 => {
-                    if (channel2.type === 'text' && channel2.permissionsFor(channel2.guild.me).has(['READ_MESSAGES', 'SEND_MESSAGES'])) { bot.log(channel2.guild.name + ' | #' + channel2.name + ' | (' + channel2.id + ')'); }
-                });
-            } else if (d.startsWith('bind') && channel) {
-                d = d.substring(d.indexOf(' ') + 1, d.length);
-                if (bot.channels.get(d)) {
-                    channel = d;
-                    bot.log('Console rebound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-                }
-            } else if (channel) {
-                try {
-                    bot.channels.get(channel).send(d);
-                } catch (err) {
-                    bot.log(err);
-                }
-            } else if (bot.channels.get(d)) {
-                channel = d;
-                bot.log('Console bound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-            }
-        });
-        //if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
-    };
-
-    bot.webhook = function(header, text, color) {
+        bot.webhook = function(header, text, color) {
         var request = require('request');
         try {
             var d = {
@@ -442,7 +347,7 @@ module.exports = bot => {
 	 * Logging functions
 	 */
 
-    bot.logCommand = function(command, args, user, channel2, server) {
+      bot.logCommand = function(command, args, user, channel2, server) {
         bot.webhook('Command Executed', `**Command:** ${command}\n**User:** ${user}\n**Arguments:** ${args}\n**Server:** ${server}\n**Channel:** #${channel2}`, '#0000FF');
     };
 
@@ -497,14 +402,4 @@ module.exports = bot => {
     /**
 	 * Utility functions for information retrieval
 	 */
-
-    bot.displayServer = function(msg, serverID) {
-        db.run(`SELECT * FROM servers WHERE id = ${serverID}`, (err, row) => {
-            if (err) {
-                msg.channel.send(err);
-            } else {
-                msg.channel.send(JSON.stringify(row));
-            }
-        });
-    };
 };

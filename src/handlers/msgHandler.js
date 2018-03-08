@@ -89,7 +89,7 @@ module.exports = async function(msg, bot, channel) {
                     }
                 } catch (err) {
                     msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
-                    bot.error(err.stack);
+                    console.error(err);
                 }
             }
         });
