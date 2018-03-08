@@ -249,12 +249,14 @@ module.exports = bot => {
 
     bot.getTicker = function (ticker) {
         let data = require('./data/tickers.json');
-        let keys = Object.getOwnPropertyNames(data);
+        let keys = Object.keys(data);
         let values = Object.values(data);
-        if (data.hasOwnProperty(ticker)) {
-            return {"ticker": ticker, "name": data[ticker]};
-        } else if (values.indexOf(ticker) > -1) {
+        let isTickerNameProvided = values.indexOf(ticker) > -1
+
+        if (isTickerNameProvided) {
             return {"ticker": keys[values.indexOf(ticker)], "name": ticker};
+        } else if (data[ticker]) {
+            return {"ticker": ticker, "name": data[ticker]};
         } else {
             return {"failed": true};
         }
