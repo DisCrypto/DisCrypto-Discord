@@ -3,7 +3,7 @@ const snekfetch = require('snekfetch');
 const Promise = require('es6-promise');
 const web3 = require('web3');
 const Web3util = new web3();
-const EtherscanApiKey = require('../config.json').etherScanKey;
+const EtherscanApiKey = require('../config/config.json').etherScanKey;
 
 module.exports = {
     scanAndRender: async function(address, msg) {

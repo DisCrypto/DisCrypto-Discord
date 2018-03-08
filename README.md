@@ -11,6 +11,16 @@
 
 Invite me! https://discordapp.com/api/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot
 
+# Installation
+
+    cp ./src/config/config-example.json ./src/config/config.json
+
+Fill out config values as needed
+
+# Usage
+
+    npm run start
+
 Notice: This bot is under the AGPL license, which states that if you use any of its code in any way, shape, or form, you must state changes, link back to this repository, and use the same license on your project. If you do not follow these terms, legal action may be taken to remove your project via the Digital Millenium Copyright Act.
 
 Join our support server at https://discord.gg/Xg5V8mn for the latest news and information!
