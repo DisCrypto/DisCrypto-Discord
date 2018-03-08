@@ -20,15 +20,15 @@ module.exports = {
         let users;
         await bot.shard.fetchClientValues('users.size').then(u=> {
             users = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
         let channels;
         await bot.shard.fetchClientValues('channels.size').then(u=> {
             channels = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
         let guilds;
         await bot.shard.fetchClientValues('guilds.size').then(u=> {
             guilds = u.reduce((a, b) => a + b, 0);
-        }).catch(console.error);
+        }).catch(bot.error);
 
         const shardID = bot.shard.id;
         const shardCount = bot.shard.count;
@@ -47,7 +47,7 @@ module.exports = {
             //owner stats
             const cores = os.cpus().length;
             const speed = os.cpus()[0].speed / 1000;
-            const ram = (os.totalmem() - os.freemem()) / 1024 / 1000;
+            const ram = (process.memoryUsage().heapUsed) / 1024 / 1000;
             emb.addField(`🖥 CPU Cores`, cores, true)
                 .addField(`🕐 Clockspeed`, speed + " GHz", true)
                 .addField(`💾 Memory Usage`, Math.trunc(ram) + "MB / " + Math.trunc(os.totalmem() / 1024 / 1000) + "MB", true)
