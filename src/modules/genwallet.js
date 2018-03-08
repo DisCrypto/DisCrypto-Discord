@@ -5,10 +5,9 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
-const Promise = require('es6-promise');
 function jsUcfirst(string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -32,7 +31,7 @@ module.exports = {
                 .setThumbnail(`attachment://${ticker.ticker}.png`)
                 .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                 .setAuthor(bot.user.username, bot.user.avatarURL);
-            let {address, privKey} = await new Promise(async (res) => {
+            let {address, privKey} = await new Promise(async (res) => { 
                 if (ticker.ticker == "btc") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let keyPair = bitcoin.ECPair.makeRandom();
