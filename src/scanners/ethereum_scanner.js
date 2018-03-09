@@ -5,8 +5,8 @@ const web3 = require('web3');
 const Web3util = new web3();
 const EtherscanApiKey = require('../config.json').etherScanKey;
 
-module.exports = {
-    scanAndRender: async function(address, msg) {
+class etherScan {
+    async scanAndRender(address, msg) {
         let addressType = this.determineAddressType(address);
         if (!addressType) return Promise.reject({ message: `Invalid address ${address}` });
 
@@ -16,9 +16,8 @@ module.exports = {
         data["addressType"] = addressType;
 
         this.render(msg, data);
-    },
-
-    scan: function(address, addressType) {
+    }
+    scan (address, addressType) {
         if (addressType === "account") {
             return this.getBalanceFromEthereumAddress(address).then(function(balance) {
                 let ether = Web3util.utils.fromWei(balance.toString(), "ether");
@@ -32,15 +31,15 @@ module.exports = {
             });
         }
 
-    },
-            
+    }
 
-    determineAddressType: function(address) {
+
+    determineAddressType (address) {
         if (address.length === 42) return "account";
         if (address.length === 66) return "transaction";
 
         return null;
-    },
+    }
 
     /*
         data = {
@@ -49,18 +48,18 @@ module.exports = {
             result: ""
         }
     */
-    render: function(msg, data) {
+    render (msg, data) {
         let emb = new Discord.RichEmbed();
 
         switch(data.addressType) {
-        case "account": 
+        case "account":
             // address given
             emb.setTitle(`Ethereum Address`)
                 .setDescription(`Data for address ${data.address}:`)
                 .addField(`Balance:`, data.result)
                 .setColor(`GREEN`);
             break;
-        case "transaction": 
+        case "transaction":
             // transaction given
             emb.setTitle(`Ethereum Transaction`);
             if (data.error) {
@@ -79,24 +78,24 @@ module.exports = {
             .setThumbnail(`attachment://eth.png`);
 
         msg.channel.send(emb);
-    },
+    }
 
-    getBalanceFromEthereumAddress: function(address) {
+    getBalanceFromEthereumAddress (address) {
         let url = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${EtherscanApiKey}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
             if (data.status == 1) {
                 //OK
 
-                balance = parseInt(data.result);
+                let balance = parseInt(data.result);
                 return Promise.resolve(balance);
             } else {
                 return Promise.reject({});
             }
         });
-    },
+    }
 
-    getTransactionHashData: function(transactionHash) {
+    getTransactionHashData (transactionHash) {
         let url = `https://api.etherscan.io/api?module=transaction&action=getstatus&txhash=${transactionHash}&tag=latest&apikey=${EtherscanApiKey}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
@@ -108,4 +107,6 @@ module.exports = {
             }
         });
     }
-};
+}
+
+module.exports = etherScan;

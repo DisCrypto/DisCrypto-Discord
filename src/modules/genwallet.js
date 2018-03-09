@@ -5,7 +5,7 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 const Promise = require('es6-promise');

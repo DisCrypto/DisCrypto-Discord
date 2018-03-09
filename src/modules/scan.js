@@ -18,17 +18,16 @@ module.exports = {
         }
 
         let address = msg.args[0];
-        let coinSymbol = msg.args[1];
 
-        // let coinSymbol = determineCurrency(address);
-        // if (!coinSymbol) return msg.channel.send(`Unable to detect currency based on address`)
+        let coinSymbol = determineCurrency(address);
+        if (!coinSymbol) return msg.channel.send(`Unable to detect currency based on address`);
 
         let scanner = Scanners[coinSymbol];
         if (!scanner) return msg.channel.send(`${coinSymbol} is not supported for scan operations yet`);
 
 
         try {
-            await scanner.scanAndRender(address, msg);
+            scanner.scanAndRender(address, msg);
         } catch(err) {
             if (err.message) {
                 return msg.channel.send(err.message);
