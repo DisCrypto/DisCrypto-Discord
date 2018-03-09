@@ -3,12 +3,12 @@ const snekfetch = require('snekfetch');
 const Promise = require('es6-promise');
 const web3 = require('web3');
 const Web3util = new web3();
-const EtherscanApiKey = require('../config.json').etherScanKey;
+const EtherscanApiKey = require('../config/config.json').etherScanKey;
 
 class etherScan {
     async scanAndRender(address, msg) {
         let addressType = this.determineAddressType(address);
-        if (!addressType) return Promise.reject({ message: `Invalid address ${address}` });
+        if (!addressType) throw({ message: `Invalid address ${address}` });
 
         let data = await this.scan(address, addressType);
 
@@ -17,7 +17,7 @@ class etherScan {
 
         this.render(msg, data);
     }
-    scan (address, addressType) {
+    async scan (address, addressType) {
         if (addressType === "account") {
             return this.getBalanceFromEthereumAddress(address).then(function(balance) {
                 let ether = Web3util.utils.fromWei(balance.toString(), "ether");
@@ -45,7 +45,8 @@ class etherScan {
         data = {
             address: "",
             addressType: "account",
-            result: ""
+            result: "",
+            error: ""
         }
     */
     render (msg, data) {
@@ -74,7 +75,7 @@ class etherScan {
         default:
         }
 
-        emb.attachFile(`./data/icons/eth.png`)
+        emb.attachFile(`${srcRoot}/data/icons/eth.png`)
             .setThumbnail(`attachment://eth.png`);
 
         msg.channel.send(emb);

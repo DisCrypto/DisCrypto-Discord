@@ -1,8 +1,15 @@
-if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
-else config = require('./config.json');
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
+
+const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
+
+const path = require('path');
+global.srcRoot = path.resolve(__dirname);
+
+
 const Discord = require('discord.js');
 const bot = new Discord.Client(config.opts);
 bot.config = config;
+
 require('./funcs.js')(bot);
 const readdir = require('fs').readdir;
 
@@ -10,7 +17,7 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.events = new Discord.Collection();
 
-readdir('./modules/', (err, files) => {
+readdir(srcRoot + '/modules/', (err, files) => {
     if (err) throw err;
     bot.handleMessage = require('./handlers/msgHandler.js');
     bot.log(`Loading ${files.length} commands!`);
@@ -28,7 +35,7 @@ readdir('./modules/', (err, files) => {
     bot.log(`Commands loaded!`);
 });
 
-readdir('./events/', (err, files) => {
+readdir(srcRoot + '/events/', (err, files) => {
     if (err) throw err;
     bot.log(`Loading ${files.length} events!`);
     files.forEach(file => {
@@ -39,7 +46,13 @@ readdir('./events/', (err, files) => {
     });
     bot.log(`Events loaded!`);
 });
-if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
-if (bot.config.token) bot.login(bot.config.token);
-else if (process.env.TOKEN) bot.login(process.env.TOKEN);
-else console.log('no token provided');
+
+if (isTravisBuild) process.exit(0);
+
+if (bot.config.token) {
+    bot.login(bot.config.token)
+} else if (process.env.TOKEN) {
+    bot.login(process.env.TOKEN);
+} else {
+    console.log('no token provided');
+}

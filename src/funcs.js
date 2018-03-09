@@ -1,5 +1,7 @@
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
+
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./data/servers.sqlite');
+const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
@@ -7,8 +9,9 @@ const Promise = require('es6-promise').Promise;
 let channel = null,
     stdin = process.openStdin(),
     Discord = require('discord.js');
-if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
-else config = require('./config.json');
+
+const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
+
 
 module.exports = bot => {
     /**
