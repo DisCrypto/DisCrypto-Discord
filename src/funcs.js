@@ -1,11 +1,10 @@
-const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
-
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
+const srcRoot = ".";
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
-const Promise = require('es6-promise').Promise;
 let channel = null,
     stdin = process.openStdin(),
     Discord = require('discord.js');
@@ -254,7 +253,7 @@ module.exports = bot => {
         let data = require('./data/tickers.json');
         let keys = Object.keys(data);
         let values = Object.values(data);
-        let isTickerNameProvided = values.indexOf(ticker) > -1
+        let isTickerNameProvided = values.indexOf(ticker) > -1;
 
         if (isTickerNameProvided) {
             return {"ticker": keys[values.indexOf(ticker)], "name": ticker};
