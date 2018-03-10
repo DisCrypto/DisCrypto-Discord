@@ -1,4 +1,4 @@
-const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
@@ -17,14 +17,14 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.events = new Discord.Collection();
 
-readdir(srcRoot + '/modules/', (err, files) => {
+readdir(srcRoot + '/commands/', (err, files) => {
     if (err) throw err;
     bot.handleMessage = require('./handlers/msgHandler.js');
     bot.log(`Loading ${files.length} commands!`);
     files.forEach(f => {
         try {
-            var name = require(`./modules/${f}`).name;
-            bot.commands.set(name, require(`./modules/${f}`));
+            var name = require(`./commands/${f}`).name;
+            bot.commands.set(name, require(`./commands/${f}`));
             /* commandFile.aliases.forEach(alias => {
                 bot.aliases.set(alias, commandFile.help.name);
             });*/
@@ -50,7 +50,7 @@ readdir(srcRoot + '/events/', (err, files) => {
 if (isTravisBuild) process.exit(0);
 
 if (bot.config.token) {
-    bot.login(bot.config.token)
+    bot.login(bot.config.token);
 } else if (process.env.TOKEN) {
     bot.login(process.env.TOKEN);
 } else {

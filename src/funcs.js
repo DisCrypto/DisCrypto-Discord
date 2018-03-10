@@ -1,6 +1,7 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
+const tipdb = new sqlite3.Database(srcRoot + '/data/accounts.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
@@ -9,6 +10,31 @@ const Discord = require('discord.js');
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
 module.exports = bot => {
+
+    /*
+    Tipping/RPC node call related Functions*/
+
+    bot.addAccount = function (user) {
+        tipdb.run("INSERT OR IGNORE INTO accounts(userID, count, balance) VALUES (?,?,?)", [user.id.toString(), 0, 0], (err)=>{
+            if (err) return (err);
+        });
+        bot.log(user.username + ' successfully inserted into the database!');
+    };
+
+    bot.removeAccount = function (user) {
+        tipdb.run(`DELETE * FROM accounts WHERE userID='${user.id}'`);
+        bot.log(user.username + ' successfully removed from the database!');
+    };
+
+    bot.getAccount = async function (user) {
+        return new Promise((res, rej) => {
+            tipdb.get(`SELECT * FROM accounts WHERE userID=?`, [user.id], (err, result) => {
+                err ? rej(err) : res(result);
+            });
+        });
+    };
+
+
     /**
      * Server Related Functions
      */
@@ -54,18 +80,13 @@ module.exports = bot => {
 
     bot.syncServers = function() {
         db.serialize(() => {
+            tipdb.run(`CREATE TABLE IF NOT EXISTS accounts (userID VARCHAR(25) PRIMARY KEY, count INT, balance INT)`);
             db.run("CREATE TABLE IF NOT EXISTS servers (id VARCHAR(25) PRIMARY KEY,prefix VARCHAR(10))");
             bot.guilds.forEach(guild => {
                 try {
-                    if (guild.channels.array() && guild.channels.array()[0]) {
-                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-                            guild.id,
-                            config.prefix);
-                    } else {
-                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-                            guild.id,
-                            config.prefix);
-                    }
+                    db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+                        guild.id,
+                        config.prefix);
                 } catch (err) {
                     console.log(err.stack);
                 }
@@ -87,7 +108,7 @@ module.exports = bot => {
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-  
+
 
     bot.getPrefix = function(msg) {
         return new Promise(
@@ -139,7 +160,6 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        console.log(bot.config.owner.indexOf(msg.author.id));
         if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         } else if (msg.author.id === msg.guild.owner.id) {

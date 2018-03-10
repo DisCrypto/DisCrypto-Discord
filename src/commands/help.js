@@ -13,7 +13,7 @@ const buildCommands = function() {
         help: "Get all price data for a certain coin - always use $ as prefix"
     };
 
-    const files = readdirSync(srcRoot + '/modules/');
+    const files = readdirSync(srcRoot + '/commands/');
 
     files.forEach((file) => {
         var command = require(`./${file}`);
