@@ -20,7 +20,7 @@ module.exports = {
     help: 'Create a paper wallet where keys will be sent via Direct Message. Only supports BTC/ETH/LTC/XRP/BCH/XRB currently',
     main: async function (bot, message) {
         if (message.args.length < 1) {
-            return helper.showUsage(this, message);
+            return bot.showUsage(this, message);
         } else {
             let ticker = bot.getTicker(message.args[0].toLowerCase());
             if (ticker.failed) return message.channel.send(`We do not currently support that coin for wallet generation.`);
