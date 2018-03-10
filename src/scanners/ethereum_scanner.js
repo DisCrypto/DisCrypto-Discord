@@ -5,8 +5,8 @@ const web3 = require('web3');
 const Web3util = new web3();
 const EtherscanApiKey = require('../config/config.json').etherScanKey;
 
-class etherScan {
-    async scanAndRender(address, msg) {
+module.exports = {
+    scanAndRender: async function (address, msg) {
         let addressType = this.determineAddressType(address);
         if (!addressType) throw({ message: `Invalid address ${address}` });
 
@@ -16,8 +16,8 @@ class etherScan {
         data["addressType"] = addressType;
 
         this.render(msg, data);
-    }
-    async scan (address, addressType) {
+    },
+    scan: async function (address, addressType) {
         if (addressType === "account") {
             return this.getBalanceFromEthereumAddress(address).then(function(balance) {
                 let ether = Web3util.utils.fromWei(balance.toString(), "ether");
@@ -31,15 +31,15 @@ class etherScan {
             });
         }
 
-    }
+    },
 
 
-    determineAddressType (address) {
+    determineAddressType: function (address) {
         if (address.length === 42) return "account";
         if (address.length === 66) return "transaction";
 
         return null;
-    }
+    },
 
     /*
         data = {
@@ -49,7 +49,7 @@ class etherScan {
             error: ""
         }
     */
-    render (msg, data) {
+    render: function (msg, data) {
         let emb = new Discord.RichEmbed();
 
         switch(data.addressType) {
@@ -57,7 +57,7 @@ class etherScan {
             // address given
             emb.setTitle(`Ethereum Address`)
                 .setDescription(`Data for address ${data.address}:`)
-                .addField(`Balance:`, data.result)
+                .addField(`Balance:`, data.result.toFixed(10) + " ETH")
                 .setColor(`GREEN`);
             break;
         case "transaction":
@@ -79,9 +79,9 @@ class etherScan {
             .setThumbnail(`attachment://eth.png`);
 
         msg.channel.send(emb);
-    }
+    },
 
-    getBalanceFromEthereumAddress (address) {
+    getBalanceFromEthereumAddress: function (address) {
         let url = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${EtherscanApiKey}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
@@ -94,9 +94,9 @@ class etherScan {
                 return Promise.reject({});
             }
         });
-    }
+    },
 
-    getTransactionHashData (transactionHash) {
+    getTransactionHashData: function (transactionHash) {
         let url = `https://api.etherscan.io/api?module=transaction&action=getstatus&txhash=${transactionHash}&tag=latest&apikey=${EtherscanApiKey}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
@@ -108,6 +108,4 @@ class etherScan {
             }
         });
     }
-}
-
-module.exports = etherScan;
+};
