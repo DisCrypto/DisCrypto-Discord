@@ -1,8 +1,5 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
-let helper = {};
-require('./../funcs')(helper);
-
 
 function addCommas(x) {
     if (!x) {
@@ -27,7 +24,7 @@ module.exports = {
                 .setTitle(`ETH/BTC Flippening`)
                 .setDescription(`The Flippening is where Ethereum overtakes Bitcoin as #1 in Market Cap. \n \nCurrently Ethereum is **${percent}%** along the way to overtaking BTC.\n\nEthereum Market Cap: **$${addCommas(res.body[1].market_cap_usd)}**\n\nBitcoin Market Cap: **$${addCommas(res.body[0].market_cap_usd)}**`)
                 .setColor(`ORANGE`)
-                .attachFile(`./data/icons/flippening.jpg`)
+                .attachFile(`${srcRoot}/data/icons/flippening.jpg`)
                 .setThumbnail(`attachment://flippening.jpg`)
                 .setAuthor(bot.user.username, bot.user.avatarURL);
             message.channel.send(emb);

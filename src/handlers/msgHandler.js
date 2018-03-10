@@ -21,9 +21,9 @@ module.exports = async function(msg, bot, channel) {
     }
 
     if (msg.isMentioned(bot.user)) {
-        if (msg.content.toLowerCase().includes("what's your prefix") || msg.content.toLowerCase().includes('whats your prefix')) {
+        if (msg.content.toLowerCase().includes("what's your prefix") || msg.content.toLowerCase().includes('whats your prefix') || msg.content.toLowerCase().includes('help')) {
             bot.getPrefix(msg).then(prefix => {
-                msg.reply('my prefix for this server is `' + prefix + '`!');
+                msg.reply('my prefix for this server is `' + prefix + '`!\n\nRun `' + prefix + 'help` to get commands!');
             });
         }
 
@@ -52,7 +52,7 @@ module.exports = async function(msg, bot, channel) {
                     .setTitle(`Price of ${jsUcfirst(t.name)} [${t.ticker.toUpperCase()}]`)
                     .setURL(`https://coinmarketcap.com/currencies/${t.name}`)
                     .setColor(color)
-                    .attachFile(`./data/icons/${t.ticker}.png`)
+                    .attachFile(`${srcRoot}/data/icons/${t.ticker}.png`)
                     .setThumbnail(`attachment://${t.ticker}.png`)
                     .setFooter(`http://discrypto.xyz | @DisCrypto what's your prefix?`)
                     .setDescription(text);
@@ -64,13 +64,16 @@ module.exports = async function(msg, bot, channel) {
         }
     } else {
         this.getPrefix(msg).then(prefix => {
-            if (msg.content.startsWith(prefix)) {
+            if (msg.content.startsWith(prefix) || prefix=='') {
                 try {
                     msg.args = msg.content.split(/\s+/g);
                     msg.content = msg.content.substring(msg.content.indexOf(' ') + 1, msg.content.length) || null;
                     var command = msg.args.shift().slice(prefix.length).toLowerCase();
+                    if ((command == `setprefix` || command == `prefix`) && msg.channel.type == 'dm') {
+                        msg.channel.send(`Those commands are not available in DM.`);
+                        return;
+                    }
                     var cmd = bot.commands.get(command);
-                    // || bot.commands.get(bot.aliases.get(command))
                     var perms = bot.permLevel(msg);
 
                     if (!cmd) {
@@ -80,16 +83,17 @@ module.exports = async function(msg, bot, channel) {
                     } else if (perms < cmd.permission) {
                         msg.reply('you do not have permission to do this!');
                     } else if (bot.enabled(cmd)) {
-                        bot.logCommand(command, msg.content, msg.author.username, msg.channel.name, msg.guild.name);
+                        if (msg.channel.type!='dm') bot.logCommand(command, msg.content, msg.author.username, msg.channel.name, msg.guild.name);
                         try {
                             cmd.main(bot, msg);
                         } catch (err) {
+                            console.log(err);
                             msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
                         }
                     }
                 } catch (err) {
                     msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
-                    console.error(err);
+                    bot.error(err);
                 }
             }
         });

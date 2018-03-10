@@ -1,12 +1,22 @@
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./data/servers.sqlite');
+const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
+<<<<<<< HEAD
 const Promise = require('es6-promise').Promise;
 const Discord = require('discord.js');
 if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
 else config = require('./config.json');
+=======
+let channel = null,
+    stdin = process.openStdin(),
+    Discord = require('discord.js');
+
+const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
+
+>>>>>>> refactor_scan
 
 module.exports = bot => {
     /**
@@ -54,22 +64,17 @@ module.exports = bot => {
 
     bot.syncServers = function() {
         db.serialize(() => {
-            db.run(`CREATE TABLE IF NOT EXISTS servers (
-					id VARCHAR(25) PRIMARY KEY,
-					prefix VARCHAR(10)
-					)`);
+            db.run("CREATE TABLE IF NOT EXISTS servers (id VARCHAR(25) PRIMARY KEY,prefix VARCHAR(10))");
             bot.guilds.forEach(guild => {
                 try {
                     if (guild.channels.array() && guild.channels.array()[0]) {
-                        db.run(`INSERT OR IGNORE INTO servers VALUES (
-								"${guild.id}",
-								"${config.prefix}"
-              )`);
+                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+								guild.id,
+								config.prefix);
                     } else {
-                        db.run(`INSERT OR IGNORE INTO "servers" VALUES (
-                            "${guild.id}",
-                            "${config.prefix}"
-                            )`);
+                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+                            guild.id,
+                            config.prefix);
                     }
                 } catch (err) {
                     console.log(err.stack);
@@ -81,18 +86,18 @@ module.exports = bot => {
     };
 
     bot.removeServer = function(guild) {
-        db.run(`DELETE FROM servers WHERE id = ${guild.id}`);
+        db.run("DELETE FROM servers WHERE id = ?", guild.id);
         bot.log(guild.name + ' successfully removed from the database!');
     };
 
     bot.addServer = function(guild) {
-        db.run(`INSERT OR IGNORE INTO servers VALUES (
-				"${guild.id}",
-				"${bot.config.prefix}"
-				)`);
+        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+				guild.id,
+				bot.config.prefix);
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
+<<<<<<< HEAD
     /*    bot.checkForUpvote = function(msg) {
         return new Promise(resolve => {
             unirest.get(`https://discordbots.org/api/bots/${bot.user.id}/votes`)
@@ -119,6 +124,8 @@ module.exports = bot => {
             `https://discordbots.org/bot/${bot.user.id}`);
     };*/
 
+=======
+>>>>>>> refactor_scan
     /**
      * Giveme Roles Functions
      */
@@ -129,12 +136,18 @@ module.exports = bot => {
     bot.getPrefix = function(msg) {
         return new Promise(
             (resolve, reject) => {
-                db.all(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, rows) => {
-                    if (err || !rows[0]) reject(err);
-                    else resolve(rows[0].prefix);
+                if (!msg.guild) resolve('%');
+                db.get(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, row) => {
+                    if (err || !row) reject(err);
+                    else resolve(row.prefix);
                 });
             }
         );
+    };
+
+    bot.setPrefix = function(prefix, guild) {
+        db.run("UPDATE servers SET prefix = ? WHERE id = ? ", prefix, guild.id);
+        return prefix;
     };
 
     bot.showUsage = async function(command, msg) {
@@ -190,12 +203,14 @@ module.exports = bot => {
 
     bot.getTicker = function (ticker) {
         let data = require('./data/tickers.json');
-        let keys = Object.getOwnPropertyNames(data);
+        let keys = Object.keys(data);
         let values = Object.values(data);
-        if (data.hasOwnProperty(ticker)) {
-            return {"ticker": ticker, "name": data[ticker]};
-        } else if (values.indexOf(ticker) > -1) {
+        let isTickerNameProvided = values.indexOf(ticker) > -1;
+
+        if (isTickerNameProvided) {
             return {"ticker": keys[values.indexOf(ticker)], "name": ticker};
+        } else if (data[ticker]) {
+            return {"ticker": ticker, "name": data[ticker]};
         } else {
             return {"failed": true};
         }
@@ -219,7 +234,7 @@ module.exports = bot => {
         let data = c.body[0];
         bot.user.setPresence({
             game: {
-                name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                name: `${data.symbol} $${data.price_usd} | @DisCrypto help`,
                 type: 3,
             },
         });
@@ -228,7 +243,7 @@ module.exports = bot => {
             let data = c.body[0];
             bot.user.setPresence({
                 game: {
-                    name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                    name: `${data.symbol} $${data.price_usd}`,
                     type: 3,
                 },
             });
@@ -400,4 +415,17 @@ module.exports = bot => {
     /**
 	 * Utility functions for information retrieval
 	 */
+<<<<<<< HEAD
+=======
+
+    bot.displayServer = function(msg, serverID) {
+        db.run("SELECT * FROM servers WHERE id = ?", serverID, (err, row) => {
+            if (err) {
+                msg.channel.send(err);
+            } else {
+                msg.channel.send(JSON.stringify(row));
+            }
+        });
+    };
+>>>>>>> refactor_scan
 };

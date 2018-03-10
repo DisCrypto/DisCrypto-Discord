@@ -18,15 +18,15 @@ module.exports = {
         const cpuUsage = await osu.cpu.usage();
 
         let users;
-        await bot.shard.fetchClientValues('users.size').then(u=> {
+        await bot.shard.fetchClientValues('users.size').then(u => {
             users = u.reduce((a, b) => a + b, 0);
         }).catch(bot.error);
         let channels;
-        await bot.shard.fetchClientValues('channels.size').then(u=> {
+        await bot.shard.fetchClientValues('channels.size').then(u => {
             channels = u.reduce((a, b) => a + b, 0);
         }).catch(bot.error);
         let guilds;
-        await bot.shard.fetchClientValues('guilds.size').then(u=> {
+        await bot.shard.fetchClientValues('guilds.size').then(u => {
             guilds = u.reduce((a, b) => a + b, 0);
         }).catch(bot.error);
 

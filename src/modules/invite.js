@@ -1,6 +1,4 @@
 const Discord = require('discord.js');
-let helper = {}
-require('./../funcs')(helper);
 
 module.exports = {
     name: 'invite',
