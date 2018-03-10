@@ -47,12 +47,17 @@ module.exports = {
         } else {
             // help for all
 
-            let text = `**Command List**\n\nUse ${prefix}help [command] to get more info on a specific command\n\n` +
+            let text = `\nInvite this bot to your server: <https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot>\n\n` + 
+                       `**Command List**\n` + 
+                       `Use \`${prefix}help [command] \` to get more info on a specific command \n`+ 
+                       `For example,  \`${prefix}help scan\`\n\n` +
                        '' +
-                       '**Core** - `top` `convert` `coininfo` `$` \n' + 
+                       '**Core** - `top` `scan` `convert` `coininfo` `$` \n' + 
                        '**Utility** - `genwallet`\n' +
                        '**Fun** - `flippening`\n' +
-                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n'
+                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n\n' +
+                       `\n\nWEBSITE: <https://discrypto.xyz>` + 
+                       `\nSupport: <https://discordapp.com/invite/Xg5V8mn>` 
 
             let emb = new Discord.RichEmbed()
             .addField("Commands", text)
