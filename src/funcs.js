@@ -140,6 +140,7 @@ module.exports = bot => {
     bot.getPrefix = function(msg) {
         return new Promise(
             (resolve, reject) => {
+                if (!msg.guild) resolve('');
                 db.all(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, rows) => {
                     if (err || !rows[0]) reject(err);
                     else resolve(rows[0].prefix);
@@ -246,7 +247,7 @@ module.exports = bot => {
         let data = c.body[0];
         bot.user.setPresence({
             game: {
-                name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                name: `${data.symbol} $${data.price_usd} | ${bot.user} help`,
                 type: 3,
             },
         });
@@ -255,7 +256,7 @@ module.exports = bot => {
             let data = c.body[0];
             bot.user.setPresence({
                 game: {
-                    name: `#${data.rank} ${data.symbol} $${data.price_usd}`,
+                    name: `${data.symbol} $${data.price_usd}`,
                     type: 3,
                 },
             });

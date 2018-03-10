@@ -1,20 +1,15 @@
 const Scanners = require("./../scanners/index");
 
-let helper = {};
-require('./../funcs')(helper);
-
-
-
 module.exports = {
     name: 'scan',
     type: 'all',
     usage: 'scan [address|txid] [coin]',
-    example: 'scan 0x141766882733cafa9033e8707548fdcac908db22',
+    example: 'scan 0x141766882733cafa9033e8707548fdcac908db22\n\n**Supported Coins**\n\nBitcoin (BTC)\nEthereum (ETH)',
     permission: 1,
     help: 'Scan a address or txid',
     main: async function(bot, msg) {
         if (msg.args.length < 1) {
-            return helper.showUsage(this, msg);
+            return bot.showUsage(this, msg);
         }
 
         let address = msg.args[0];
