@@ -52,7 +52,7 @@ module.exports = async function(msg, bot, channel) {
                     .setTitle(`Price of ${jsUcfirst(t.name)} [${t.ticker.toUpperCase()}]`)
                     .setURL(`https://coinmarketcap.com/currencies/${t.name}`)
                     .setColor(color)
-                    .attachFile(`./data/icons/${t.ticker}.png`)
+                    .attachFile(`${srcRoot}/data/icons/${t.ticker}.png`)
                     .setThumbnail(`attachment://${t.ticker}.png`)
                     .setFooter(`discrypto.dajuukes.codes | @DisCrypto what's your prefix?`)
                     .setDescription(text);
@@ -84,6 +84,7 @@ module.exports = async function(msg, bot, channel) {
                         try {
                             cmd.main(bot, msg);
                         } catch (err) {
+                            console.log(err);
                             msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
                         }
                     }
