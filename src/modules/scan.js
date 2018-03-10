@@ -20,21 +20,18 @@ module.exports = {
         let address = msg.args[0];
 
         let coinSymbol = determineCurrency(address);
-        if (!coinSymbol) return msg.channel.send(`Unable to detect currency based on address`);
-
+        if (!coinSymbol && !msg.args[1]) return msg.channel.send(`Unable to detect currency based on address, if it is a txid please put the coin (ETH OR BTC) after it. Ex: \`scan (txid) btc\``);
+        if (msg.args[1]) coinSymbol = msg.args[1];
         let scanner = Scanners[coinSymbol];
         if (!scanner) return msg.channel.send(`${coinSymbol} is not supported for scan operations yet`);
 
-
-        try {
-            scanner.scanAndRender(address, msg);
-        } catch(err) {
+        scanner.scanAndRender(address, msg).catch((err) => {
             if (err.message) {
                 return msg.channel.send(err.message);
             } else {
                 console.log(err);
             }
-        }
+        });
     }
 };
 

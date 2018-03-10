@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
-const Promise = require('es6-promise');
 const web3 = require('web3');
 const Web3util = new web3();
 const EtherscanApiKey = require('../config/config.json').etherScanKey;
@@ -8,9 +7,10 @@ const EtherscanApiKey = require('../config/config.json').etherScanKey;
 module.exports = {
     scanAndRender: async function (address, msg) {
         let addressType = this.determineAddressType(address);
-        if (!addressType) throw({ message: `Invalid address ${address}` });
 
-        let data = await this.scan(address, addressType);
+        if (!addressType){ throw({ message: `Invalid address ${address}` });}
+
+        let data = await this.scan(address, addressType).catch(console.error);
 
         data["address"] = address;
         data["addressType"] = addressType;
@@ -57,7 +57,7 @@ module.exports = {
             // address given
             emb.setTitle(`Ethereum Address`)
                 .setDescription(`Data for address ${data.address}:`)
-                .addField(`Balance:`, data.result.toFixed(10) + " ETH")
+                .addField(`Balance:`, data.result + " ETH")
                 .setColor(`GREEN`);
             break;
         case "transaction":

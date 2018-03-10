@@ -3,12 +3,18 @@ const snekfetch = require('snekfetch');
 const web3 = require('web3');
 const Web3util = new web3();
 
+function fromSat (val) {
+    return val / 100000000;
+}
+
 module.exports = {
     scanAndRender: async function(address, msg) {
         let addressType = this.determineAddressType(address);
         if (!addressType) return Promise.reject({ message: `Invalid address ${address}` });
 
-        let data = await this.scan(address, addressType);
+        let data = await this.scan(address, addressType).catch(() => {
+            return Promise.reject({ message: `Invalid address ${address}` });
+        });
 
         data["address"] = address;
         data["addressType"] = addressType;
@@ -18,9 +24,11 @@ module.exports = {
 
     scan: function(address, addressType) {
         if (addressType === "account") {
-            return this.getBalanceFromEthereumAddress(address).then(function(balance) {
-                let ether = Web3util.utils.fromWei(balance.toString(), "ether");
-                return Promise.resolve({ result: ether });
+            return this.getBalanceFromBitcoinAddress(address).then(function(balance) {
+                console.log(balance);
+                return Promise.resolve({ result: fromSat(balance) });
+            }).catch(function(err) {
+                return Promise.resolve({ error: err });
             });
         } else if (addressType === "transaction") {
             return this.getTransactionHashData(address).then(function(result) {
@@ -35,7 +43,7 @@ module.exports = {
 
     determineAddressType: function(address) {
         if (address.length === 34) return "account";
-        if (address.length === 62) return "transaction";
+        if (address.length === 64) return "transaction";
 
         return null;
     },
@@ -53,57 +61,54 @@ module.exports = {
         switch(data.addressType) {
         case "account":
             // address given
-            emb.setTitle(`Ethereum Address`)
+            emb.setTitle(`Bitcoin Address`)
                 .setDescription(`Data for address ${data.address}:`)
-                .addField(`Balance:`, data.result)
-                .setColor(`GREEN`);
+                .addField(`Balance:`, data.result.toFixed(11) + " BTC");
             break;
         case "transaction":
             // transaction given
-            emb.setTitle(`Ethereum Transaction`);
-            if (data.error) {
-                emb.setColor(`RED`)
-                    .setDescription(`Failed transaction.`)
-                    .addField(`Reason`, data.error);
-            } else {
-                emb.setColor(`GREEN`)
-                    .setDescription(`Successful transaction.`);
+            let total = 0;
+            let desc = `\n**Inputs**:\n`;
+            console.log(data);
+            for (let val of data.result.inputs) {
+                total += val.prev_out.value;
+                desc += `\n${val.prev_out.addr} - **${fromSat(val.prev_out.value)} BTC**`;
             }
+            desc += `\n\n**Outputs**:\n`;
+            for (let val of data.result.out) {
+                desc += `\n${val.addr} - **${fromSat(val.value)} BTC**`;
+            }
+            desc += `\n\n\n**Total BTC Sent: ${fromSat(total)} BTC**`;
+            emb.setTitle(`Bitcoin Transaction`)
+                .setDescription(desc);
+
             break;
         default:
         }
 
-        emb.attachFile(`./data/icons/eth.png`)
-            .setThumbnail(`attachment://eth.png`);
+        emb.attachFile(`./data/icons/btc.png`)
+            .setThumbnail(`attachment://btc.png`)
+            .setColor(`GOLD`);
 
         msg.channel.send(emb);
     },
 
-    getBalanceFromEthereumAddress: function(address) {
-        let url = `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${EtherscanApiKey}`;
+    getBalanceFromBitcoinAddress: function(address) {
+        let url = `https://blockchain.info/q/addressbalance/${address}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
-            if (data.status == 1) {
-                //OK
-
-                let balance = parseInt(data.result);
-                return Promise.resolve(balance);
-            } else {
-                return Promise.reject({});
-            }
-        });
+            let balance = parseInt(data);
+            if (isNaN(balance)) {return Promise.reject({});}
+            return Promise.resolve(balance);
+        }).catch(()=>{return Promise.reject({});});
     },
 
     getTransactionHashData: function(transactionHash) {
-        let url = `https://api.etherscan.io/api?module=transaction&action=getstatus&txhash=${transactionHash}&tag=latest&apikey=${EtherscanApiKey}`;
+        let url = `https://blockchain.info/rawtx/${transactionHash}`;
         return snekfetch.get(url).then(result => {
             let data = result.body;
-            if (data.result.isError == 0) {
             //OK
-                return Promise.resolve(data.result);
-            } else {
-                return Promise.reject(data.result.errDescription);
-            }
-        });
+            return Promise.resolve(data);
+        }).catch(()=>{return Promise.reject({});});
     }
 };
