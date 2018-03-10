@@ -1,7 +1,9 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
   var Server = sequelize.define('Server', {
-    id: DataTypes.STRING,
+    id: { type: DataTypes.STRING, primaryKey: true },
+    guid: DataTypes.STRING,
+    name: DataTypes.STRING,
     prefix: DataTypes.STRING
   }, {
     tableName: "servers",
@@ -12,5 +14,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return User;
+  return Server;
 };

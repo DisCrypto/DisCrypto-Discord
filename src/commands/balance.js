@@ -8,8 +8,9 @@ module.exports = {
     permission: 1,
     help: 'Check your account balance/stats.',
     main: async function (bot, message) {
-        let acc = await bot.getAccount(message.author).catch(()=>{ return message.channel.send(`We encountered an error, sorry!`);});
-        if (!acc) {
+        let account = await bot.getAccount(message.author)
+
+        if (!account) {
             bot.addAccount(message.author);
             return message.channel.send(`You do not have a tipping account, so one was created for you. Run the command again to view it.`);
         } else {
@@ -19,8 +20,8 @@ module.exports = {
                 .setThumbnail(message.author.displayAvatarURL)
                 .setColor(`GOLD`)
                 .setDescription(`Detailed stats on your tipping account.`)
-                .addField(`Balance`, acc.balance, true)
-                .addField(`# of Tips Sent/Received`, acc.count, true);
+                .addField(`Balance`, account.balance || 0, true)
+                .addField(`# of Tips Sent/Received`, account.count || 0, true);
 
             message.channel.send(emb);
         }

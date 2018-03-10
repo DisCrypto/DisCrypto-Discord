@@ -1,11 +1,10 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
-const tipdb = new sqlite3.Database(srcRoot + '/data/accounts.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
+
+const models = require('./db/models/index');
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
@@ -14,24 +13,24 @@ module.exports = bot => {
     /*
     Tipping/RPC node call related Functions*/
 
-    bot.addAccount = function (user) {
-        tipdb.run("INSERT OR IGNORE INTO accounts(userID, count, balance) VALUES (?,?,?)", [user.id.toString(), 0, 0], (err)=>{
-            if (err) return (err);
-        });
-        bot.log(user.username + ' successfully inserted into the database!');
+    bot.addAccount = async function (user) {
+        const fullUsername = [user.username, user.discriminator].join("#")
+        let account = await models.Account.create({ guid: user.id, username: fullUsername, balance: 0 })
+
+        if (account) {
+            bot.log(user.username + ' successfully inserted into the database!');
+            return account
+        }
     };
 
-    bot.removeAccount = function (user) {
-        tipdb.run(`DELETE * FROM accounts WHERE userID='${user.id}'`);
+    bot.removeAccount = async function (user) {
+        let account = await models.Account.destroy({ where: { guid: user.id.toString()} })
+
         bot.log(user.username + ' successfully removed from the database!');
     };
 
-    bot.getAccount = async function (user) {
-        return new Promise((res, rej) => {
-            tipdb.get(`SELECT * FROM accounts WHERE userID=?`, [user.id], (err, result) => {
-                err ? rej(err) : res(result);
-            });
-        });
+    bot.getAccount = function (user) {
+        return models.Account.findOne({ where: { guid: user.id } }) 
     };
 
 
@@ -78,52 +77,46 @@ module.exports = bot => {
         }
     };
 
-    bot.syncServers = function() {
-        db.serialize(() => {
-            tipdb.run(`CREATE TABLE IF NOT EXISTS accounts (userID VARCHAR(25) PRIMARY KEY, count INT, balance INT)`);
-            db.run("CREATE TABLE IF NOT EXISTS servers (id VARCHAR(25) PRIMARY KEY,prefix VARCHAR(10))");
-            bot.guilds.forEach(guild => {
-                try {
-                    db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-                        guild.id,
-                        config.prefix);
-                } catch (err) {
-                    console.log(err.stack);
+    bot.syncServers = async function() {
+        bot.guilds.forEach(async (guild) => {
+            try {
+                let server = await models.Server.findOne({ where: { guid: guild.id } })
+                if (!server) {
+                   server = await models.Server.create({ guid: guild.id, name: guild.name, prefix: config.prefix }) 
                 }
-            });
+            } catch (err) {
+                console.log(err.stack);
+            }
         });
+
         bot.log('Servers synced.');
         return "completed";
     };
 
-    bot.removeServer = function(guild) {
-        db.run("DELETE FROM servers WHERE id = ?", guild.id);
+    bot.removeServer = async function(guild) {
+        await models.Server.destroy( { where: { guid: guild.id } }) 
         bot.log(guild.name + ' successfully removed from the database!');
     };
 
-    bot.addServer = function(guild) {
-        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-            guild.id,
-            bot.config.prefix);
+    bot.addServer = async function(guild) {
+        await models.Server.create({ guid: guild.id, prefix: config.prefix }) 
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
 
+    bot.getPrefix = async function(msg) {
+        let prefix = "%"
+        const server = await models.Server.findOne({ where: { guid: msg.guild.id }}) 
+        if (server) prefix = server.prefix
 
-    bot.getPrefix = function(msg) {
-        return new Promise(
-            (resolve, reject) => {
-                if (!msg.guild) resolve('%');
-                db.get(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, row) => {
-                    if (err || !row) reject(err);
-                    else resolve(row.prefix);
-                });
-            }
-        );
+        return prefix
     };
 
-    bot.setPrefix = function(prefix, guild) {
-        db.run("UPDATE servers SET prefix = ? WHERE id = ? ", prefix, guild.id);
+    bot.setPrefix = async function(prefix, guild) {
+        const server = await models.Server.findOne({ where: { guid: guild.id }}) 
+        debugger
+        if (server) await server.update({ prefix: prefix })
+
         return prefix;
     };
 
@@ -384,17 +377,4 @@ module.exports = bot => {
         return '[' + hours + ':' + minutes + ':' + seconds + ']';
     };
 
-    /**
-	 * Utility functions for information retrieval
-	 */
-
-    bot.displayServer = function(msg, serverID) {
-        db.run("SELECT * FROM servers WHERE id = ?", serverID, (err, row) => {
-            if (err) {
-                msg.channel.send(err);
-            } else {
-                msg.channel.send(JSON.stringify(row));
-            }
-        });
-    };
 };
