@@ -1,5 +1,4 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
-const srcRoot = ".";
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
