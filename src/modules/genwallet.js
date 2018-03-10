@@ -25,10 +25,12 @@ module.exports = {
         if (message.args.length < 1) {
             return helper.showUsage(this, message);
         } else {
-            let ticker = bot.getTicker(message.args[0]);
+            let ticker = bot.getTicker(message.args[0].toLowerCase());
+            if (ticker.failed) return message.channel.send(`We do not currently support that coin for wallet generation.`);
+
             let emb = new Discord.RichEmbed()
                 .setTitle(`New ${jsUcfirst(ticker.name)} Paper Wallet`)
-                .attachFile(`./data/icons/${ticker.ticker}.png`)
+                .attachFile(`${srcRoot}/data/icons/${ticker.ticker}.png`)
                 .setThumbnail(`attachment://${ticker.ticker}.png`)
                 .setDescription(`KEEP YOUR PRIVATE KEY VERY SAFE!`)
                 .setAuthor(bot.user.username, bot.user.avatarURL);
