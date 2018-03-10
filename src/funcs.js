@@ -4,19 +4,9 @@ const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
-<<<<<<< HEAD
-const Promise = require('es6-promise').Promise;
 const Discord = require('discord.js');
-if (process.argv[2] && process.argv[2] === '--travis') var config = require('./config-example.json');
-else config = require('./config.json');
-=======
-let channel = null,
-    stdin = process.openStdin(),
-    Discord = require('discord.js');
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
-
->>>>>>> refactor_scan
 
 module.exports = bot => {
     /**
@@ -69,8 +59,8 @@ module.exports = bot => {
                 try {
                     if (guild.channels.array() && guild.channels.array()[0]) {
                         db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-								guild.id,
-								config.prefix);
+                            guild.id,
+                            config.prefix);
                     } else {
                         db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
                             guild.id,
@@ -92,46 +82,12 @@ module.exports = bot => {
 
     bot.addServer = function(guild) {
         db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-				guild.id,
-				bot.config.prefix);
+            guild.id,
+            bot.config.prefix);
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-<<<<<<< HEAD
-    /*    bot.checkForUpvote = function(msg) {
-        return new Promise(resolve => {
-            unirest.get(`https://discordbots.org/api/bots/${bot.user.id}/votes`)
-                .headers({
-                    Authorization: bot.config.dbotsorg,
-                })
-                .end(result => {
-                    var voters = result.body;
-                    for (var i = 0; i < voters.length; i++) {
-                        if (voters[i].id === msg.author.id) { resolve(true); }
-                    }
-                    if (msg.author.id === bot.config.owner) resolve(true);
-                    if (msg.guild.members.get(bot.config.owner) && msg.guild.members.get(bot.config.owner).hasPermission('MANAGE_MESSAGES')) resolve(true);
-                    resolve(false);
-                    // Set to false on Stable
-                });
-        });
-    };*/
-
-    /*  bot.promptForUpvote = function(msg, command) {
-        msg.channel.send(`To use the **${command}** command, please go upvote me on discordbots.org! ` +
-            `You can do so by visiting the link below, signing in, and clicking upvote! ` +
-            `If you have already upvoted, give the bot a few minutes to update its list of voters.\n` +
-            `https://discordbots.org/bot/${bot.user.id}`);
-    };*/
-
-=======
->>>>>>> refactor_scan
-    /**
-     * Giveme Roles Functions
-     */
-    /**
-     * Prefix Related Functions
-     */
+  
 
     bot.getPrefix = function(msg) {
         return new Promise(
@@ -415,8 +371,6 @@ module.exports = bot => {
     /**
 	 * Utility functions for information retrieval
 	 */
-<<<<<<< HEAD
-=======
 
     bot.displayServer = function(msg, serverID) {
         db.run("SELECT * FROM servers WHERE id = ?", serverID, (err, row) => {
@@ -427,5 +381,4 @@ module.exports = bot => {
             }
         });
     };
->>>>>>> refactor_scan
 };
