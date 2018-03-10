@@ -153,6 +153,12 @@ module.exports = bot => {
             }
         );
     };
+    
+    bot.setPrefix = function(prefix, guild) {
+        db.run('UPDATE servers SET prefix = "' + prefix + '" WHERE id = ' + guild.id);
+        return prefix;
+    };
+
 
     bot.showUsage = async function(command, msg) {
         let prefix = await this.getPrefix(msg);
@@ -169,52 +175,6 @@ module.exports = bot => {
         return;
     };
 
-
-    bot.setPrefix = function(prefix, guild) {
-        db.run('UPDATE servers SET prefix = "' + prefix + '" WHERE id = ' + guild.id);
-        return prefix;
-    };
-
-    /**
-     * Server Settings Related Functions
-     */
-
-    bot.setNewValue = function(setting, id, text) {
-        db.run(`UPDATE servers SET ${setting} = "${text}" WHERE id = "${id}"`);
-        return text;
-    };
-
-    bot.setNewBoolValue = function(setting, id, text) {
-        db.run(`UPDATE servers SET ${setting} = ${text} WHERE id = "${id}"`);
-        return text;
-    };
-
-    bot.getCurrentBooleanSetting = function(setting, id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0][setting]);
-            });
-        });
-    };
-
-    bot.getCurrentSetting = function(setting, id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0][setting]);
-            });
-        });
-    };
-
-    bot.getAllSettings = function(id) {
-        return new Promise(resolve => {
-            db.all('SELECT * FROM servers WHERE id = ' + id, (err, rows) => {
-                if (err) throw err;
-                resolve(rows[0]);
-            });
-        });
-    };
 
     /**
 	 * Core message processing functions

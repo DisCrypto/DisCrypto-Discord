@@ -4,5 +4,38 @@
   "prefix": "%",
   "shards": 1,
   "games": [],
-  "etherScanKey": "ether_scan_io_api_key"
+  "etherScanKey": "ether_scan_io_api_key",
+  "database": {
+    "define": {
+      "underscored": true
+    },
+    "development": {
+      "database": "discrypto_development",
+      "host": "localhost",
+      "port": 3306,
+      "username": "root",
+      "password": "",
+      "dialect": "sqlite",
+      "dialectOptions": {
+        "timeout": 10
+      }
+    },
+    "production": {
+      "database": "discrypto_production",
+      "host": "localhost",
+      "port": 3306,
+      "username": "root",
+      "password": "",
+      "dialect": "sqlite",
+      "dialectOptions": {
+        "timeout": 60
+      },
+      "pool": {
+        "max": 10,
+        "min": 0,
+        "idle": 20000,
+        "acquire": 20000
+      }
+    }
+  }
 }
