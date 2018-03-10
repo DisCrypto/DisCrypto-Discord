@@ -4,7 +4,7 @@
   "description": "",
   "main": ".eslintrc.js",
   "scripts": {
-    "start": "node src/start.js"
+    "start": "cd src && node start.js"
   },
   "repository": {
     "type": "git",
