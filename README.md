@@ -13,6 +13,12 @@ Invite me! https://discordapp.com/api/oauth2/authorize?client_id=411996950670344
 
 # Installation
 
+**Must have git and Node 9.0+**
+
+    git clone https://github.com/DisCrypto/DisCrypto-Discord.git
+
+    npm i
+
     cp ./src/config/config-example.json ./src/config/config.json
 
 Fill out config values as needed
