@@ -33,8 +33,8 @@ module.exports = {
 const determineCurrency = function(addressOrTransactionHash) {
     let prefix = addressOrTransactionHash.split("_")[0];
 
-    let isBitcoinPrefix = prefix.startsWith(`1`) || prefix.startsWith(`3`);
-    let isEthereumPrefix = prefix.startsWith(`0x`);
+    let isBitcoinPrefix = ((prefix.startsWith(`1`) || prefix.startsWith(`3`)) && addressOrTransactionHash.length == 34);
+    let isEthereumPrefix = ((prefix.startsWith(`0x`)) && addressOrTransactionHash.length == 44);
 
     if (isBitcoinPrefix) return "btc";
     if (isEthereumPrefix) return "eth";

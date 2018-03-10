@@ -1,5 +1,3 @@
-let helper = {}
-require('./../funcs')(helper);
 
 module.exports = {
     name: 'eval',

@@ -24,7 +24,7 @@ module.exports = {
             message.channel.send(`Invalid coin, make sure it a valid ticker, name, or the words usd/fiat!`);
             return;
         }
-        else if (amount == 0 || !amount || amount > 25) {
+        else if (amount == 0 || !amount || amount > 25 || amount < 0) {
             message.channel.send(`Invalid amount, make sure it is not a float (0.X) and less than 25!`);
             return;
         }

@@ -110,32 +110,6 @@ module.exports = bot => {
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-    bot.checkForUpvote = function(msg) {
-        return new Promise(resolve => {
-            unirest.get(`https://discordbots.org/api/bots/${bot.user.id}/votes`)
-                .headers({
-                    Authorization: bot.config.dbotsorg,
-                })
-                .end(result => {
-                    var voters = result.body;
-                    for (var i = 0; i < voters.length; i++) {
-                        if (voters[i].id === msg.author.id) { resolve(true); }
-                    }
-                    if (msg.author.id === bot.config.owner) resolve(true);
-                    if (msg.guild.members.get(bot.config.owner) && msg.guild.members.get(bot.config.owner).hasPermission('MANAGE_MESSAGES')) resolve(true);
-                    resolve(false);
-                    // Set to false on Stable
-                });
-        });
-    };
-
-    bot.promptForUpvote = function(msg, command) {
-        msg.channel.send(`To use the **${command}** command, please go upvote me on discordbots.org! ` +
-            `You can do so by visiting the link below, signing in, and clicking upvote! ` +
-            `If you have already upvoted, give the bot a few minutes to update its list of voters.\n` +
-            `https://discordbots.org/bot/${bot.user.id}`);
-    };
-
     /**
      * Giveme Roles Functions
      */
@@ -146,10 +120,10 @@ module.exports = bot => {
     bot.getPrefix = function(msg) {
         return new Promise(
             (resolve, reject) => {
-                if (!msg.guild) resolve('');
-                db.all(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, rows) => {
-                    if (err || !rows[0]) reject(err);
-                    else resolve(rows[0].prefix);
+                if (!msg.guild) resolve('%');
+                db.get(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, row) => {
+                    if (err || !row) reject(err);
+                    else resolve(row.prefix);
                 });
             }
         );
@@ -293,7 +267,7 @@ module.exports = bot => {
         let data = c.body[0];
         bot.user.setPresence({
             game: {
-                name: `${data.symbol} $${data.price_usd} | ${bot.user} help`,
+                name: `${data.symbol} $${data.price_usd} | @DisCrypto help`,
                 type: 3,
             },
         });
@@ -307,33 +281,6 @@ module.exports = bot => {
                 },
             });
         }, 600000);
-    };
-
-    bot.awaitConsoleInput = function() {
-        stdin.addListener('data', d => {
-            d = d.toString().trim();
-            if (d.startsWith('channels')) {
-                bot.channels.forEach(channel2 => {
-                    if (channel2.type === 'text' && channel2.permissionsFor(channel2.guild.me).has(['READ_MESSAGES', 'SEND_MESSAGES'])) { bot.log(channel2.guild.name + ' | #' + channel2.name + ' | (' + channel2.id + ')'); }
-                });
-            } else if (d.startsWith('bind') && channel) {
-                d = d.substring(d.indexOf(' ') + 1, d.length);
-                if (bot.channels.get(d)) {
-                    channel = d;
-                    bot.log('Console rebound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-                }
-            } else if (channel) {
-                try {
-                    bot.channels.get(channel).send(d);
-                } catch (err) {
-                    bot.log(err);
-                }
-            } else if (bot.channels.get(d)) {
-                channel = d;
-                bot.log('Console bound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-            }
-        });
-        //if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
     };
 
     bot.webhook = function(header, text, color) {

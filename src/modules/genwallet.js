@@ -5,10 +5,7 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
-let helper = {};
-require('./../funcs')(helper);
 
-const Promise = require('es6-promise');
 function jsUcfirst(string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -40,12 +37,14 @@ module.exports = {
                     let keyPair = bitcoin.ECPair.makeRandom();
                     let address = keyPair.getAddress();
                     let privKey = keyPair.toWIF();
+                    emb.setColor(`GOLD`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "eth") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let wallet = etherwallet.createRandom();
                     let address = wallet.address;
                     let privKey = wallet.privateKey;
+                    emb.setColor(`DARK_GREY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "ltc") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
@@ -53,6 +52,7 @@ module.exports = {
                     let keyPair = bitcoin.ECPair.makeRandom({ network: litecoin});
                     let address = keyPair.getAddress();
                     let privKey = keyPair.toWIF();
+                    emb.setColor(`LIGHT_GREY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "bch") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
@@ -64,14 +64,15 @@ module.exports = {
                     let wallet = ripple.generate();
                     let address = wallet.address;
                     let privKey = wallet.secret;
+                    emb.setColor(`DARK_NAVY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "nano" || ticker.ticker == "xrb") {
                     message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     crypto.randomBytes(32, (err, buf) => {
-                        //console.log(buf);
                         let wallet = nanoJS.address.fromSeed(buf);
                         let address = wallet.address;
                         let privKey = wallet.secret;
+                        emb.setColor(`AQUA`);
                         res({address: address, privKey: privKey});
                     });
                 } else {

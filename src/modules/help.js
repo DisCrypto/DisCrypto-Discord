@@ -44,15 +44,20 @@ module.exports = {
             return bot.showUsage(command, message);
         } else {
             // help for all
+            let gName = "";
+            message.guild ? gName = message.guild.name : gName = `This DM`;
 
-            let text = `\nInvite this bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot)\n\n` +
+            if (gName != "This DM")  message.channel.send(`Sending you commands in DM...`);
+
+            let text = `**${gName}'s prefix is ${prefix}**\n\n` +
+                       `\nInvite this bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot)\n\n` +
                        `**Command List**\n` +
-                       `Use \`${prefix}help [command] \` to get more info on a specific command \n`+
-                       `For example,  \`${prefix}help scan\`\n\n` +
+                       `Use \`help [command] \` to get more info on a specific command \n`+
+                       `For example,  \`help scan\`\n\n` +
                        '**Core** - `top` `scan` `convert` `coininfo` `$` \n' +
                        '**Utility** - `genwallet`\n' +
                        '**Fun** - `flippening`\n' +
-                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n\n' +
+                       '**Management** - `invite` `ping` `setprefix`\n\n' +
                        `WEBSITE: <https://discrypto.xyz>` +
                        `\nSupport: <https://discordapp.com/invite/Xg5V8mn>`;
 
