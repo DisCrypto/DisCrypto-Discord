@@ -54,8 +54,8 @@ module.exports = {
                        `**Command List**\n` +
                        `Use \`help [command] \` to get more info on a specific command \n`+
                        `For example,  \`help scan\`\n\n` +
-                       '**Core** - `top` `convert` `coininfo` `$` \n' +
-                       '**Utility** - `genwallet` `scan`\n' +
+                       '**Core** - `top` `scan` `convert` `coininfo` `$` \n' +
+                       '**Utility** - `genwallet`\n' +
                        '**Fun** - `flippening`\n' +
                        '**Management** - `invite` `ping` `setprefix`\n\n' +
                        `WEBSITE: <https://discrypto.xyz>` +
