@@ -79,7 +79,7 @@ module.exports = bot => {
 								guild.id,
 								config.prefix);
                     } else {
-                        db.run("INSERT OR IGNORE INTO "servers" VALUES (?,?)",
+                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
                             guild.id,
                             config.prefix);
                     }
