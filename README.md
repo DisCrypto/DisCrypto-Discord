@@ -1,5 +1,5 @@
 <p align="center">
-<h1>DisCrypto v1</h1>
+<h1>DisCrypto v2</h1>
 
 [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 
