@@ -3,6 +3,5 @@
   "owner": "insert_owner_id",
   "prefix": "%",
   "shards": 1,
-  "games": [],
   "etherScanKey": "ether_scan_io_api_key"
 }
