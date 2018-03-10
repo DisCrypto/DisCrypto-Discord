@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
 const readdirSync = require('fs').readdirSync;
-let helper = {}
+let helper = {};
 require('./../funcs')(helper);
 
 
 const buildCommands = function() {
 
-    const commands = {}
+    const commands = {};
 
     commands["$"] = {
         name: "$",
@@ -15,17 +15,17 @@ const buildCommands = function() {
         help: "Get all price data for a certain coin - always use $ as prefix"
     };
 
-    const files = readdirSync('./modules/')
+    const files = readdirSync('./modules/');
 
     files.forEach((file) => {
         var command = require(`./${file}`);
         if (command.type !== "owner") {
-            commands[command.name] = command
+            commands[command.name] = command;
         }
     });
 
-    return commands
-}
+    return commands;
+};
 
 module.exports = {
     name: 'help',
@@ -36,30 +36,30 @@ module.exports = {
     help: 'Show help.',
     main: async function (bot, message) {
         let prefix = await bot.getPrefix(message);
-        let commands = buildCommands(prefix)
+        let commands = buildCommands(prefix);
 
-        let commandName = message.args[0]
+        let commandName = message.args[0];
 
         if (commands[commandName]) {
             // help for single command
-            let command = commands[commandName]
+            let command = commands[commandName];
             return helper.showUsage(command, message);
         } else {
             // help for all
 
             let text = `**Command List**\n\nUse ${prefix}help [command] to get more info on a specific command\n\n` +
                        '' +
-                       '**Core** - `top` `convert` `coininfo` `$` \n' + 
+                       '**Core** - `top` `convert` `coininfo` `$` \n' +
                        '**Utility** - `genwallet`\n' +
                        '**Fun** - `flippening`\n' +
-                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n'
+                       '**Management** - `invite` `ping` `setprefix` `shardinfo`\n';
 
             let emb = new Discord.RichEmbed()
-            .addField("Commands", text)
-            .setColor(`GOLD`)
-            .setAuthor(bot.user.username, bot.user.avatarURL);
+                .setColor(`GOLD`)
+                .setAuthor(bot.user.username, bot.user.avatarURL)
+                .setDescription(text);
 
-            message.channel.send(text);
+            message.author.send(emb);
 
         }
 
