@@ -71,22 +71,17 @@ module.exports = bot => {
 
     bot.syncServers = function() {
         db.serialize(() => {
-            db.run(`CREATE TABLE IF NOT EXISTS servers (
-					id VARCHAR(25) PRIMARY KEY,
-					prefix VARCHAR(10)
-					)`);
+            db.run("CREATE TABLE IF NOT EXISTS servers (id VARCHAR(25) PRIMARY KEY,prefix VARCHAR(10))");
             bot.guilds.forEach(guild => {
                 try {
                     if (guild.channels.array() && guild.channels.array()[0]) {
-                        db.run(`INSERT OR IGNORE INTO servers VALUES (
-								"${guild.id}",
-								"${config.prefix}"
-              )`);
+                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+								guild.id,
+								config.prefix);
                     } else {
-                        db.run(`INSERT OR IGNORE INTO "servers" VALUES (
-                            "${guild.id}",
-                            "${config.prefix}"
-                            )`);
+                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+                            guild.id,
+                            config.prefix);
                     }
                 } catch (err) {
                     console.log(err.stack);
@@ -98,15 +93,14 @@ module.exports = bot => {
     };
 
     bot.removeServer = function(guild) {
-        db.run(`DELETE FROM servers WHERE id = ${guild.id}`);
+        db.run("DELETE FROM servers WHERE id = ?", guild.id);
         bot.log(guild.name + ' successfully removed from the database!');
     };
 
     bot.addServer = function(guild) {
-        db.run(`INSERT OR IGNORE INTO servers VALUES (
-				"${guild.id}",
-				"${bot.config.prefix}"
-				)`);
+        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+				guild.id,
+				bot.config.prefix);
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
@@ -129,6 +123,11 @@ module.exports = bot => {
         );
     };
 
+    bot.setPrefix = function(prefix, guild) {
+        db.run("UPDATE servers SET prefix = ? WHERE id = ? ", prefix, guild.id);
+        return prefix;
+    };
+
     bot.showUsage = async function(command, msg) {
         let prefix = await this.getPrefix(msg);
         if (command.name === "$") prefix = "";
@@ -144,11 +143,6 @@ module.exports = bot => {
         return;
     };
 
-
-    bot.setPrefix = function(prefix, guild) {
-        db.run('UPDATE servers SET prefix = "' + prefix + '" WHERE id = ' + guild.id);
-        return prefix;
-    };
 
     /**
      * Server Settings Related Functions
@@ -450,7 +444,7 @@ module.exports = bot => {
 	 */
 
     bot.displayServer = function(msg, serverID) {
-        db.run(`SELECT * FROM servers WHERE id = ${serverID}`, (err, row) => {
+        db.run("SELECT * FROM servers WHERE id = ?", serverID, (err, row) => {
             if (err) {
                 msg.channel.send(err);
             } else {
