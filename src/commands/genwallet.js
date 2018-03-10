@@ -5,10 +5,7 @@ const ripple = require('ripple-wallet');
 const bch = require('bitcore-lib-cash');
 const nanoJS = require('nano-lib');
 const crypto = require('crypto');
-let helper = {};
-require('./../funcs')(helper);
 
-const Promise = require('es6-promise');
 function jsUcfirst(string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -23,11 +20,11 @@ module.exports = {
     help: 'Create a paper wallet where keys will be sent via Direct Message. Only supports BTC/ETH/LTC/XRP/BCH/XRB currently',
     main: async function (bot, message) {
         if (message.args.length < 1) {
-            return helper.showUsage(this, message);
+            return bot.showUsage(this, message);
         } else {
             let ticker = bot.getTicker(message.args[0].toLowerCase());
             if (ticker.failed) return message.channel.send(`We do not currently support that coin for wallet generation.`);
-
+            let m = message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
             let emb = new Discord.RichEmbed()
                 .setTitle(`New ${jsUcfirst(ticker.name)} Paper Wallet`)
                 .attachFile(`${srcRoot}/data/icons/${ticker.ticker}.png`)
@@ -36,42 +33,40 @@ module.exports = {
                 .setAuthor(bot.user.username, bot.user.avatarURL);
             let {address, privKey} = await new Promise(async (res) => {
                 if (ticker.ticker == "btc") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let keyPair = bitcoin.ECPair.makeRandom();
                     let address = keyPair.getAddress();
                     let privKey = keyPair.toWIF();
+                    emb.setColor(`GOLD`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "eth") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let wallet = etherwallet.createRandom();
                     let address = wallet.address;
                     let privKey = wallet.privateKey;
+                    emb.setColor(`DARK_GREY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "ltc") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let litecoin = bitcoin.networks.litecoin;
                     let keyPair = bitcoin.ECPair.makeRandom({ network: litecoin});
                     let address = keyPair.getAddress();
                     let privKey = keyPair.toWIF();
+                    emb.setColor(`LIGHT_GREY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "bch") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let privKey = new bch.PrivateKey();
                     let address = privKey.toAddress();
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "xrp") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     let wallet = ripple.generate();
                     let address = wallet.address;
                     let privKey = wallet.secret;
+                    emb.setColor(`DARK_NAVY`);
                     res({address: address, privKey: privKey});
                 } else if (ticker.ticker == "nano" || ticker.ticker == "xrb") {
-                    message.channel.send(`Generating a ${jsUcfirst(ticker.name)} paper wallet..`);
                     crypto.randomBytes(32, (err, buf) => {
-                        //console.log(buf);
                         let wallet = nanoJS.address.fromSeed(buf);
                         let address = wallet.address;
                         let privKey = wallet.secret;
+                        emb.setColor(`AQUA`);
                         res({address: address, privKey: privKey});
                     });
                 } else {
@@ -81,7 +76,7 @@ module.exports = {
             });
             emb.addField(`PUBLIC KEY (send to this address)`, address)
                 .addField(`PRIVATE KEY (KEEP SECURE)`, privKey);
-            message.author.send(emb);
+            message.author.send(emb).then(() => m.edit(`Generated new ${ticker.ticker.toUpperCase()} paper wallet and sent it in DM.`));
         }
     }
 };

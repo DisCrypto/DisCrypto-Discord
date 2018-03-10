@@ -1,8 +1,5 @@
 const Discord = require('discord.js');
 const snekfetch = require('snekfetch');
-let helper = {}
-require('./../funcs')(helper);
-
 
 function addCommas(x) {
     if (!x) {

@@ -10,7 +10,8 @@ module.exports = {
 
         if (!addressType){ throw({ message: `Invalid address ${address}` });}
 
-        let data = await this.scan(address, addressType).catch(console.error);
+        let data = await this.scan(address, addressType);
+        if (data.error) return Promise.reject({ message: `Invalid address ${address}` });
 
         data["address"] = address;
         data["addressType"] = addressType;

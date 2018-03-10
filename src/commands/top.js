@@ -24,7 +24,7 @@ module.exports = {
             message.channel.send(`Invalid coin, make sure it a valid ticker, name, or the words usd/fiat!`);
             return;
         }
-        else if (amount == 0 || !amount || amount > 25) {
+        else if (amount == 0 || !amount || amount > 25 || amount < 0) {
             message.channel.send(`Invalid amount, make sure it is not a float (0.X) and less than 25!`);
             return;
         }
@@ -39,7 +39,7 @@ module.exports = {
                 let d = data[i];
                 total = total + parseInt(d.market_cap_usd);
                 let graph = ((d.percent_change_24h.indexOf("-") > -1) ?  '📉' : '📈');
-                text = text + `\n**${d.name}:** | **$${d.price_usd}** | **${d.percent_change_24h}%** | ${graph}`;
+                text = text + `\n**${d.ticker}:** | **$${d.price_usd}** | **${d.percent_change_24h}%** | ${graph}`;
             }
             text += `\n\n**Total Market Cap of These Coins: ** $${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
             emb.setDescription(text);

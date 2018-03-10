@@ -1,6 +1,4 @@
 const Discord = require('discord.js');
-let helper = {}
-require('./../funcs')(helper);
 
 module.exports = {
     name: 'invite',
@@ -10,7 +8,6 @@ module.exports = {
     permission: 1,
     help: 'Generate support server/bot invite links',
     main: async function (bot, message) {
-        console.log(`call`);
         let emb = new Discord.RichEmbed()
             .setTitle(`Bot Resources`)
             .setThumbnail(bot.user.displaytAvatarURL)

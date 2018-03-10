@@ -1,34 +1,43 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
+const tipdb = new sqlite3.Database(srcRoot + '/data/accounts.sqlite');
 const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
-let channel = null,
-    stdin = process.openStdin(),
-    Discord = require('discord.js');
+const Discord = require('discord.js');
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
-
 module.exports = bot => {
+
+    /*
+    Tipping/RPC node call related Functions*/
+
+    bot.addAccount = function (user) {
+        tipdb.run("INSERT OR IGNORE INTO accounts(userID, count, balance) VALUES (?,?,?)", [user.id.toString(), 0, 0], (err)=>{
+            if (err) return (err);
+        });
+        bot.log(user.username + ' successfully inserted into the database!');
+    };
+
+    bot.removeAccount = function (user) {
+        tipdb.run(`DELETE * FROM accounts WHERE userID='${user.id}'`);
+        bot.log(user.username + ' successfully removed from the database!');
+    };
+
+    bot.getAccount = async function (user) {
+        return new Promise((res, rej) => {
+            tipdb.get(`SELECT * FROM accounts WHERE userID=?`, [user.id], (err, result) => {
+                err ? rej(err) : res(result);
+            });
+        });
+    };
+
+
     /**
      * Server Related Functions
      */
-
-    bot.fetchGuildSize = function() {
-        return new Promise(
-            resolve => {
-                if (bot.shard) {
-                    bot.shard.fetchClientValues('guilds.size').then(g => {
-                        resolve(g.reduce((prev, val) => prev + val, 0));
-                    }).catch(console.error);
-                } else {
-                    resolve(bot.guilds.size);
-                }
-            }
-        );
-    };
 
     bot.sendServerCount = function() {
         if (bot.config.sendServerCounts) {
@@ -71,18 +80,13 @@ module.exports = bot => {
 
     bot.syncServers = function() {
         db.serialize(() => {
+            tipdb.run(`CREATE TABLE IF NOT EXISTS accounts (userID VARCHAR(25) PRIMARY KEY, count INT, balance INT)`);
             db.run("CREATE TABLE IF NOT EXISTS servers (id VARCHAR(25) PRIMARY KEY,prefix VARCHAR(10))");
             bot.guilds.forEach(guild => {
                 try {
-                    if (guild.channels.array() && guild.channels.array()[0]) {
-                        db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-								guild.id,
-								config.prefix);
-                    } else {
-                        db.run("INSERT OR IGNORE INTO "servers" VALUES (?,?)",
-                            guild.id,
-                            config.prefix);
-                    }
+                    db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
+                        guild.id,
+                        config.prefix);
                 } catch (err) {
                     console.log(err.stack);
                 }
@@ -99,51 +103,20 @@ module.exports = bot => {
 
     bot.addServer = function(guild) {
         db.run("INSERT OR IGNORE INTO servers VALUES (?,?)",
-				guild.id,
-				bot.config.prefix);
+            guild.id,
+            bot.config.prefix);
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-    bot.checkForUpvote = function(msg) {
-        return new Promise(resolve => {
-            unirest.get(`https://discordbots.org/api/bots/${bot.user.id}/votes`)
-                .headers({
-                    Authorization: bot.config.dbotsorg,
-                })
-                .end(result => {
-                    var voters = result.body;
-                    for (var i = 0; i < voters.length; i++) {
-                        if (voters[i].id === msg.author.id) { resolve(true); }
-                    }
-                    if (msg.author.id === bot.config.owner) resolve(true);
-                    if (msg.guild.members.get(bot.config.owner) && msg.guild.members.get(bot.config.owner).hasPermission('MANAGE_MESSAGES')) resolve(true);
-                    resolve(false);
-                    // Set to false on Stable
-                });
-        });
-    };
 
-    bot.promptForUpvote = function(msg, command) {
-        msg.channel.send(`To use the **${command}** command, please go upvote me on discordbots.org! ` +
-            `You can do so by visiting the link below, signing in, and clicking upvote! ` +
-            `If you have already upvoted, give the bot a few minutes to update its list of voters.\n` +
-            `https://discordbots.org/bot/${bot.user.id}`);
-    };
-
-    /**
-     * Giveme Roles Functions
-     */
-    /**
-     * Prefix Related Functions
-     */
 
     bot.getPrefix = function(msg) {
         return new Promise(
             (resolve, reject) => {
-                if (!msg.guild) resolve('');
-                db.all(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, rows) => {
-                    if (err || !rows[0]) reject(err);
-                    else resolve(rows[0].prefix);
+                if (!msg.guild) resolve('%');
+                db.get(`SELECT * FROM servers WHERE id = "${msg.guild.id}"`, (err, row) => {
+                    if (err || !row) reject(err);
+                    else resolve(row.prefix);
                 });
             }
         );
@@ -153,7 +126,6 @@ module.exports = bot => {
         db.run("UPDATE servers SET prefix = ? WHERE id = ? ", prefix, guild.id);
         return prefix;
     };
-
 
     bot.showUsage = async function(command, msg) {
         let prefix = await this.getPrefix(msg);
@@ -170,7 +142,6 @@ module.exports = bot => {
         return;
     };
 
-
     /**
 	 * Core message processing functions
 	 */
@@ -185,7 +156,6 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        console.log(bot.config.owner.indexOf(msg.author.id));
         if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         } else if (msg.author.id === msg.guild.owner.id) {
@@ -228,17 +198,6 @@ module.exports = bot => {
             .setFooter(bot.user.username, bot.user.avatarURL));
     };
 
-    bot.blacklist = function(id) {
-        var blacklistJson = fs.readFileSync('./blacklist.json'),
-            blacklist = JSON.parse(blacklistJson);
-        for (var i = 0; i < blacklist.length; i++) {
-            if (blacklist[i] === id) { return true; }
-        }
-        return false;
-    };
-
-
-
     bot.startGameCycle = async function() {
         async function getRand(count) {
             return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * count}&limit=1`);
@@ -247,7 +206,7 @@ module.exports = bot => {
         let data = c.body[0];
         bot.user.setPresence({
             game: {
-                name: `${data.symbol} $${data.price_usd} | ${bot.user} help`,
+                name: `${data.symbol} $${data.price_usd} | @DisCrypto help`,
                 type: 3,
             },
         });
@@ -261,33 +220,6 @@ module.exports = bot => {
                 },
             });
         }, 600000);
-    };
-
-    bot.awaitConsoleInput = function() {
-        stdin.addListener('data', d => {
-            d = d.toString().trim();
-            if (d.startsWith('channels')) {
-                bot.channels.forEach(channel2 => {
-                    if (channel2.type === 'text' && channel2.permissionsFor(channel2.guild.me).has(['READ_MESSAGES', 'SEND_MESSAGES'])) { bot.log(channel2.guild.name + ' | #' + channel2.name + ' | (' + channel2.id + ')'); }
-                });
-            } else if (d.startsWith('bind') && channel) {
-                d = d.substring(d.indexOf(' ') + 1, d.length);
-                if (bot.channels.get(d)) {
-                    channel = d;
-                    bot.log('Console rebound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-                }
-            } else if (channel) {
-                try {
-                    bot.channels.get(channel).send(d);
-                } catch (err) {
-                    bot.log(err);
-                }
-            } else if (bot.channels.get(d)) {
-                channel = d;
-                bot.log('Console bound to channel ' + bot.channels.get(d).name + ' in ' + bot.channels.get(d).guild.name + '!');
-            }
-        });
-        //if (process.argv[2] && process.argv[2] === '--travis') process.exit(0);
     };
 
     bot.webhook = function(header, text, color) {

@@ -54,7 +54,7 @@ module.exports = async function(msg, bot, channel) {
                     .setColor(color)
                     .attachFile(`${srcRoot}/data/icons/${t.ticker}.png`)
                     .setThumbnail(`attachment://${t.ticker}.png`)
-                    .setFooter(`discrypto.dajuukes.codes | @DisCrypto what's your prefix?`)
+                    .setFooter(`http://discrypto.xyz | @DisCrypto what's your prefix?`)
                     .setDescription(text);
                 msg.channel.send(emb);
                 return;
@@ -69,8 +69,8 @@ module.exports = async function(msg, bot, channel) {
                     msg.args = msg.content.split(/\s+/g);
                     msg.content = msg.content.substring(msg.content.indexOf(' ') + 1, msg.content.length) || null;
                     var command = msg.args.shift().slice(prefix.length).toLowerCase();
-                    if (command == `setprefix` || command == `prefix` || command == `shardinfo`) {
-                        msg.channel.send(`Those commands are not availible in DM.`);
+                    if ((command == `setprefix` || command == `prefix`) && msg.channel.type == 'dm') {
+                        msg.channel.send(`Those commands are not available in DM.`);
                         return;
                     }
                     var cmd = bot.commands.get(command);

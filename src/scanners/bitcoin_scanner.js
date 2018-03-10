@@ -12,10 +12,8 @@ module.exports = {
         let addressType = this.determineAddressType(address);
         if (!addressType) return Promise.reject({ message: `Invalid address ${address}` });
 
-        let data = await this.scan(address, addressType).catch(() => {
-            return Promise.reject({ message: `Invalid address ${address}` });
-        });
-
+        let data = await this.scan(address, addressType);
+        if (data.error) return Promise.reject({ message: `Invalid address ${address}` });
         data["address"] = address;
         data["addressType"] = addressType;
 
@@ -25,7 +23,6 @@ module.exports = {
     scan: function(address, addressType) {
         if (addressType === "account") {
             return this.getBalanceFromBitcoinAddress(address).then(function(balance) {
-                console.log(balance);
                 return Promise.resolve({ result: fromSat(balance) });
             }).catch(function(err) {
                 return Promise.resolve({ error: err });
@@ -69,7 +66,6 @@ module.exports = {
             // transaction given
             let total = 0;
             let desc = `\n**Inputs**:\n`;
-            console.log(data);
             for (let val of data.result.inputs) {
                 total += val.prev_out.value;
                 desc += `\n${val.prev_out.addr} - **${fromSat(val.prev_out.value)} BTC**`;
@@ -94,8 +90,11 @@ module.exports = {
     },
 
     getBalanceFromBitcoinAddress: function(address) {
+        console.log(`rrreee`);
         let url = `https://blockchain.info/q/addressbalance/${address}`;
         return snekfetch.get(url).then(result => {
+            console.log(result.body);
+            if (result.body == 'Checksum does not validate') return Promise.reject({});
             let data = result.body;
             let balance = parseInt(data);
             if (isNaN(balance)) {return Promise.reject({});}
@@ -106,6 +105,7 @@ module.exports = {
     getTransactionHashData: function(transactionHash) {
         let url = `https://blockchain.info/rawtx/${transactionHash}`;
         return snekfetch.get(url).then(result => {
+            if (result.body == 'Transaction not found') return Promise.reject({});
             let data = result.body;
             //OK
             return Promise.resolve(data);
