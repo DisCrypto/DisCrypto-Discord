@@ -3,6 +3,7 @@ const snekfetch = require('snekfetch');
 const web3 = require('web3');
 const Web3util = new web3();
 const EtherscanApiKey = require('../config/config.json').etherScanKey;
+const InfuraApiKey = require('../config/config.json').infuraKey;
 
 module.exports = {
     scanAndRender: async function (address, msg) {
@@ -11,7 +12,7 @@ module.exports = {
         if (!addressType){ throw({ message: `Invalid address ${address}` });}
 
         let data = await this.scan(address, addressType);
-        if (data.error) return Promise.reject({ message: `Invalid address ${address}` });
+        if (data.error) return Promise.reject({ message: `Scan went wrong` });
 
         data["address"] = address;
         data["addressType"] = addressType;
@@ -26,7 +27,19 @@ module.exports = {
             });
         } else if (addressType === "transaction") {
             return this.getTransactionHashData(address).then(function(result) {
-                return Promise.resolve({ result: result });
+                let ether = Web3util.utils.fromWei(result["result"]["value"], "ether");
+                let gasPrice = Web3util.utils.fromWei(result["result"]["gasPrice"], "ether")
+
+                let transactionData = {
+                    txHash: result["result"]["hash"],
+                    blockNumber: parseInt(result["result"]["blockNumber"]),
+                    value: ether,
+                    from: result["result"]["from"],
+                    to: result["result"]["to"],
+                    gasPrice: gasPrice
+                }
+
+                return Promise.resolve({ result: transactionData });
             }).catch(function(err) {
                 return Promise.resolve({ error: err });
             });
@@ -69,8 +82,15 @@ module.exports = {
                     .setDescription(`Failed transaction.`)
                     .addField(`Reason`, data.error);
             } else {
-                emb.setColor(`GREEN`)
-                    .setDescription(`Successful transaction.`);
+                let desc = `**txHash**: ${data.result.txHash}\n` + 
+                           `**blockNumber**: ${data.result.blockNumber}\n` + 
+                           `**value**: ${data.result.value} Ether\n` + 
+                           `**from**: ${data.result.from}\n` + 
+                           `**to**: ${data.result.to}\n` + 
+                           `**gasPrice**: ${data.result.gasPrice} Ether\n`
+
+                emb.setDescription(desc);
+
             }
             break;
         default:
@@ -98,15 +118,15 @@ module.exports = {
     },
 
     getTransactionHashData: function (transactionHash) {
-        let url = `https://api.etherscan.io/api?module=transaction&action=getstatus&txhash=${transactionHash}&tag=latest&apikey=${EtherscanApiKey}`;
+        let url = `https://api.infura.io/v1/jsonrpc/mainnet/eth_getTransactionByHash?params=[%22${transactionHash}%22]&token=${InfuraApiKey}`
+
         return snekfetch.get(url).then(result => {
             let data = result.body;
-            if (data.result.isError == 0) {
-            //OK
-                return Promise.resolve(data.result);
-            } else {
-                return Promise.reject(data.result.errDescription);
+            if (result.status !== 200) {
+                return Promise.reject("transaction not found");
             }
+
+            return Promise.resolve(data);
         });
     }
 };
