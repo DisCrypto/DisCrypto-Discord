@@ -1,6 +1,9 @@
 exports.run = async bot => {
     bot.sendServerCount();
-    await bot.syncServers();
+    let wallet = await bot.syncServers().catch((err) => {
+        console.log(err);
+        process.exit(1);
+    });
     bot.startGameCycle();
     delete require.cache[require.resolve(`../commands/reset.js`)]; //seriously idk why but it always needs to be reloaded
     bot.commands.set('reset', require(`../commands/reset.js`));

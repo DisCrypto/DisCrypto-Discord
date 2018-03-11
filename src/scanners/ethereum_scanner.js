@@ -82,12 +82,12 @@ module.exports = {
                     .setDescription(`Failed transaction.`)
                     .addField(`Reason`, data.error);
             } else {
-                let desc = `**txHash**: ${data.result.txHash}\n` + 
-                           `**blockNumber**: ${data.result.blockNumber}\n` + 
-                           `**value**: ${data.result.value} Ether\n` + 
-                           `**from**: ${data.result.from}\n` + 
-                           `**to**: ${data.result.to}\n` + 
-                           `**gasPrice**: ${data.result.gasPrice} Ether\n`
+                let desc = `**TxHash**: ${data.result.txHash}\n` +
+                           `**Block Number**: ${data.result.blockNumber}\n` +
+                           `**Value**: ${data.result.value} Ether\n` +
+                           `**From**: ${data.result.from}\n` +
+                           `**To**: ${data.result.to}\n` +
+                           `**Gas Price**: ${data.result.gasPrice} Ether\n`
 
                 emb.setDescription(desc);
 

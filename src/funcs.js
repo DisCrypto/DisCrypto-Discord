@@ -3,34 +3,40 @@ const fs = require('fs');
 const unirest = require('unirest');
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
-
+const rNode = require('./node');
 const models = require('./db/models/index');
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
 module.exports = bot => {
 
+    /*Nano RPC call functions*/
+
+    bot.getBalanceOfNano = async function (acc) {
+        return rNode.account_balance(acc);
+    };
+
     /*
-    Tipping/RPC node call related Functions*/
+    Tipping DB related Functions*/
 
     bot.addAccount = async function (user) {
-        const fullUsername = [user.username, user.discriminator].join("#")
-        let account = await models.Account.create({ guid: user.id, username: fullUsername, balance: 0 })
+        const fullUsername = [user.username, user.discriminator].join("#");
+        let account = await models.Account.create({ guid: user.id, username: fullUsername, balance: 0 });
 
         if (account) {
             bot.log(user.username + ' successfully inserted into the database!');
-            return account
+            return account;
         }
     };
 
     bot.removeAccount = async function (user) {
-        let account = await models.Account.destroy({ where: { guid: user.id.toString()} })
+        let account = await models.Account.destroy({ where: { guid: user.id.toString()} });
 
         bot.log(user.username + ' successfully removed from the database!');
     };
 
     bot.getAccount = function (user) {
-        return models.Account.findOne({ where: { guid: user.id } }) 
+        return models.Account.findOne({ where: { guid: user.id } });
     };
 
 
@@ -78,46 +84,56 @@ module.exports = bot => {
     };
 
     bot.syncServers = async function() {
-        bot.guilds.forEach(async (guild) => {
-            try {
-                let server = await models.Server.findOne({ where: { guid: guild.id } })
-                if (!server) {
-                   server = await models.Server.create({ guid: guild.id, name: guild.name, prefix: config.prefix }) 
+        return new Promise((res, rej) => {
+            bot.guilds.forEach(async (guild) => {
+                try {
+                    let server = await models.Server.findOne({ where: { guid: guild.id } });
+                    if (!server) {
+                        server = await models.Server.create({ guid: guild.id, name: guild.name, prefix: config.prefix });
+                    }
+                } catch (err) {
+                    console.log(err.stack);
                 }
-            } catch (err) {
-                console.log(err.stack);
-            }
-        });
+            });
+            rNode.wallet_locked(config.walletAddr).then(r => {
 
-        bot.log('Servers synced.');
-        return "completed";
+                res(r);
+            }).catch(() => {
+                //no wallet create one
+                rNode.wallet_create().then(r => {
+                    rNode.password_change(r, config.walletPass).catch(rej);
+                    res(r);
+                }).catch(rej);
+            });
+            bot.log('Servers and wallet synced.');
+        });
     };
 
     bot.removeServer = async function(guild) {
-        await models.Server.destroy( { where: { guid: guild.id } }) 
+        await models.Server.destroy( { where: { guid: guild.id } });
         bot.log(guild.name + ' successfully removed from the database!');
     };
 
     bot.addServer = async function(guild) {
-        await models.Server.create({ guid: guild.id, prefix: config.prefix }) 
+        await models.Server.create({ guid: guild.id, prefix: config.prefix });
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
 
     bot.getPrefix = async function(msg) {
-        let prefix = "%"
-        
+        let prefix = "%";
+
         if (msg.guild) {
-            const server = await models.Server.findOne({ where: { guid: msg.guild.id }}) 
-            if (server) prefix = server.prefix
+            const server = await models.Server.findOne({ where: { guid: msg.guild.id }});
+            if (server) prefix = server.prefix;
         }
 
-        return prefix
+        return prefix;
     };
 
     bot.setPrefix = async function(prefix, guild) {
-        const server = await models.Server.findOne({ where: { guid: guild.id }}) 
-        if (server) await server.update({ prefix: prefix })
+        const server = await models.Server.findOne({ where: { guid: guild.id }});
+        if (server) await server.update({ prefix: prefix });
 
         return prefix;
     };
