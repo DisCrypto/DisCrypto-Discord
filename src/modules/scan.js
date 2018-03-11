@@ -38,6 +38,6 @@ const determineCurrency = function(addressOrTransactionHash) {
 
     if (isBitcoinPrefix) return "btc";
     if (isEthereumPrefix) return "eth";
-
+    if (!isBitcoinPrefix && !isEthereumPrefix) return "btc";
     return null;
 };
