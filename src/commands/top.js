@@ -39,7 +39,7 @@ module.exports = {
                 let d = data[i];
                 total = total + parseInt(d.market_cap_usd);
                 let graph = ((d.percent_change_24h.indexOf("-") > -1) ?  '📉' : '📈');
-                text = text + `\n**${d.ticker}:** | **$${d.price_usd}** | **${d.percent_change_24h}%** | ${graph}`;
+                text = text + `\n**${d.name}:** | **$${d.price_usd}** | **${d.percent_change_24h}%** | ${graph}`;
             }
             text += `\n\n**Total Market Cap of These Coins: ** $${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
             emb.setDescription(text);

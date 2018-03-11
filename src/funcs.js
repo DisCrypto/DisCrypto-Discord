@@ -106,15 +106,17 @@ module.exports = bot => {
 
     bot.getPrefix = async function(msg) {
         let prefix = "%"
-        const server = await models.Server.findOne({ where: { guid: msg.guild.id }}) 
-        if (server) prefix = server.prefix
+        
+        if (msg.guild) {
+            const server = await models.Server.findOne({ where: { guid: msg.guild.id }}) 
+            if (server) prefix = server.prefix
+        }
 
         return prefix
     };
 
     bot.setPrefix = async function(prefix, guild) {
         const server = await models.Server.findOne({ where: { guid: guild.id }}) 
-        debugger
         if (server) await server.update({ prefix: prefix })
 
         return prefix;

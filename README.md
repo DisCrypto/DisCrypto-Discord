@@ -20,6 +20,7 @@ Invite me! https://discordapp.com/api/oauth2/authorize?client_id=411996950670344
     npm i
 
     cp ./src/config/config-example.json ./src/config/config.json
+    cp ./src/config/database-example.json ./src/config/database.json
 
 Fill out config values as needed
 
