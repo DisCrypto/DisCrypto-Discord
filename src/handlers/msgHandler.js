@@ -60,7 +60,7 @@ module.exports = async function(msg, bot, channel) {
                 return;
             });
         } catch (e) {
-            console.error(e);
+            bot.error(e);
         }
     } else {
         this.getPrefix(msg).then(prefix => {
@@ -87,7 +87,7 @@ module.exports = async function(msg, bot, channel) {
                         try {
                             cmd.main(bot, msg);
                         } catch (err) {
-                            console.log(err);
+                            bot.error(err);
                             msg.channel.send('Oh no! We encountered an error! Join our support server https://discord.gg/Xg5V8mn if it persists.');
                         }
                     }

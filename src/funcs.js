@@ -19,7 +19,7 @@ module.exports = bot => {
             if (bot.shard) {
                 bot.shard.fetchClientValues('guilds.size').then(g => {
                     guilds = g.reduce((prev, val) => prev + val, 0);
-                }).catch(console.error);
+                }).catch(bot.error);
             } else {
                 guilds = bot.guilds.size;
             }
@@ -67,7 +67,7 @@ module.exports = bot => {
                             config.prefix);
                     }
                 } catch (err) {
-                    console.log(err.stack);
+                    bot.log(err.stack);
                 }
             });
         });
@@ -186,7 +186,7 @@ module.exports = bot => {
         async function getRand(count) {
             return snekfetch.get(`http://api.coinmarketcap.com/v1/ticker/?start=${Math.round(Math.random() * 10) * count}&limit=1`);
         }
-        let c = await getRand(2).catch(err => {console.error(err); return;});
+        let c = await getRand(2).catch(err => {bot.error(err); return;});
         let data = c.body[0];
         bot.user.setPresence({
             game: {
@@ -195,7 +195,7 @@ module.exports = bot => {
             },
         });
         setInterval(async () => {
-            let c = await getRand(2).catch(err => {console.error(err); return;});
+            let c = await getRand(2).catch(err => {bot.error(err); return;});
             let data = c.body[0];
             bot.user.setPresence({
                 game: {
