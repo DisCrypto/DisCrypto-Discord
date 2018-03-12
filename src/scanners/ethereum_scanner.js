@@ -28,7 +28,7 @@ module.exports = {
         } else if (addressType === "transaction") {
             return this.getTransactionHashData(address).then(function(result) {
                 let ether = Web3util.utils.fromWei(result["result"]["value"], "ether");
-                let gasPrice = Web3util.utils.fromWei(result["result"]["gasPrice"], "ether")
+                let gasPrice = Web3util.utils.fromWei(result["result"]["gasPrice"], "ether");
 
                 let transactionData = {
                     txHash: result["result"]["hash"],
@@ -37,7 +37,7 @@ module.exports = {
                     from: result["result"]["from"],
                     to: result["result"]["to"],
                     gasPrice: gasPrice
-                }
+                };
 
                 return Promise.resolve({ result: transactionData });
             }).catch(function(err) {
@@ -82,14 +82,14 @@ module.exports = {
                     .setDescription(`Failed transaction.`)
                     .addField(`Reason`, data.error);
             } else {
-                let desc = `**txHash**: ${data.result.txHash}\n` + 
-                           `**blockNumber**: ${data.result.blockNumber}\n` + 
-                           `**value**: ${data.result.value} Ether\n` + 
-                           `**from**: ${data.result.from}\n` + 
-                           `**to**: ${data.result.to}\n` + 
-                           `**gasPrice**: ${data.result.gasPrice} Ether\n`
-
-                emb.setDescription(desc);
+                let desc = `**TxHash**: ${data.result.txHash}\n` +
+                           `**Block Number**: ${data.result.blockNumber}\n` +
+                           `**Value**: ${data.result.value} Ether\n` +
+                           `**From**: ${data.result.from}\n` +
+                           `**To**: ${data.result.to}\n` +
+                           `**Gas Price**: ${data.result.gasPrice} Ether\n`;
+                emb.setColor(`GREEN`)        
+                    .setDescription(desc);
 
             }
             break;
@@ -118,7 +118,7 @@ module.exports = {
     },
 
     getTransactionHashData: function (transactionHash) {
-        let url = `https://api.infura.io/v1/jsonrpc/mainnet/eth_getTransactionByHash?params=[%22${transactionHash}%22]&token=${InfuraApiKey}`
+        let url = `https://api.infura.io/v1/jsonrpc/mainnet/eth_getTransactionByHash?params=[%22${transactionHash}%22]&token=${InfuraApiKey}`;
 
         return snekfetch.get(url).then(result => {
             let data = result.body;
