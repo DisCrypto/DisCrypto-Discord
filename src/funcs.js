@@ -139,10 +139,12 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        if (msg.channel.type == 'dm') return 5;
-        else if (bot.config.owner.indexOf(msg.author.id) > -1) {
+
+        if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
-        } else if (msg.author.id === msg.guild.owner.id) {
+        }
+        if (msg.channel.type == 'dm') return 5;
+        else if (msg.author.id === msg.guild.owner.id) {
             return 5;
         } else if (msg.member.hasPermission('MANAGE_GUILD')) {
             return 4;
@@ -150,10 +152,8 @@ module.exports = bot => {
             return 3;
         } else if (msg.member.hasPermission('MANAGE_MESSAGES')) {
             return 2;
-        } else if (!bot.blacklist(msg.author.id)) {
-            return 1;
         } else {
-            return 0;
+            return 1;
         }
     };
 
