@@ -1,6 +1,6 @@
 {
-  "name1": ["Banana", "Orange", "Apple"],
+  "name1": ["Banana", "Orange", "Apple", "Bitcoin", "Ethereum", "Cardano", "Tether", "Bitconnect", "Starter", "Lend", "Smart", "Dumb", "Money", "Pay", "Request", "Connect"],
   "name2": ["Cash", "Private", "Gold", "Platinum", "Token", "Coin"],
-  "buzzwords": ["e-sports", "casino", "smart-contracts", "infinite throughput", "bitcoin but better", "privacy", "gen 3"],
-  "adjectives": ["great", "solid", "buttery", "dedicated", "rich", "true"]
+  "buzzwords": ["e-sports", "casino", "smart-contracts", "infinite throughput", "cryptography", "privacy", "gen 3", "payments", "instant transactions", "low fees", "no fees", "supply chain", "scaling", "use-cases", "stock trading", "guaranteed profit"],
+  "adjectives": ["great", "solid", "buttery", "dedicated", "rich", "spicy", "open", "censored", "for-profit", "tyrannical", "annoying", "fake"]
 }

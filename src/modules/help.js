@@ -56,7 +56,7 @@ module.exports = {
                        `For example,  \`help scan\`\n\n` +
                        '**Core** - `top` `scan` `convert` `coininfo` `$` \n' +
                        '**Utility** - `genwallet`\n' +
-                       '**Fun** - `flippening`\n' +
+                       '**Fun** - `flippening` `shitcoin`\n' +
                        '**Management** - `invite` `ping` `setprefix`\n\n' +
                        `WEBSITE: <https://discrypto.xyz>` +
                        `\nSupport: <https://discordapp.com/invite/Xg5V8mn>`;

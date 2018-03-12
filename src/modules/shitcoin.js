@@ -32,12 +32,12 @@ module.exports = {
 
         const icoTime = msToTime(Math.random() * 100000000);
 
-
+        const gainz = addCommas(Math.floor(Math.random() * 100000));
 
         const desc = `\n\nIntroducing **${name1}${name2}**, the next MOON COIN!\n\nThis coin revolutionizes **${buzzwords[0]}**, along with **${buzzwords[1]}**.`
         + `\n\nThe real kicker of this coin, however, is it's groundbreaking tech in **${buzzwords[2]}**. It's going to disrupt a **$${industry}${industrySuffix}** industry.`
         + `\n\nEven better, the team is **${adjectives[0]}**, the whitepaper is **${adjectives[1]}**, and the community is just **${adjectives[2]}**!`
-        + `\n\nTheir ICO is ongoing, it's raised **$${icoMoney}${icoSuffix}** so far! \n\nThere's only **${icoTime}** left!\n\nBuy for **10,000%** gainz!`;
+        + `\n\nTheir ICO is ongoing, it's raised **$${icoMoney}${icoSuffix}** so far! \n\nThere's only **${icoTime}** left!\n\nBuy for **${gainz}%** gainz!`;
 
         let emb = new Discord.RichEmbed()
             .setTitle(`New Shitcoin`)
