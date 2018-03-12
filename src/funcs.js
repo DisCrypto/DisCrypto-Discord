@@ -87,7 +87,7 @@ module.exports = bot => {
         bot.log(guild.name + ' successfully inserted into the database!');
     };
 
-  
+
 
     bot.getPrefix = function(msg) {
         return new Promise(
@@ -139,8 +139,8 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        console.log(bot.config.owner.indexOf(msg.author.id));
-        if (bot.config.owner.indexOf(msg.author.id) > -1) {
+        if (msg.channel.type == 'dm') return 5;
+        else if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         } else if (msg.author.id === msg.guild.owner.id) {
             return 5;
