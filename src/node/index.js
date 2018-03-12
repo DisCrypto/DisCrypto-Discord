@@ -1,9 +1,6 @@
-const RaiBlocks = require('raiblocks');
-const options = {
-    host: "127.0.0.1",
-    port: 7076
-};
+const RaiBlocks = require('node-raiblocks-rpc');
+const raiblocks = new RaiBlocks(`localhost:7076`);
 
-const raiblocks = new RaiBlocks(options);
+raiblocks.ledger('xrb_1111111111111111111111111111111111111111111111111111hifc8npp', 1).then(console.log).catch(console.log);
 
 module.exports = raiblocks;
