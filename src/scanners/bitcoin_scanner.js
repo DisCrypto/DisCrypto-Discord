@@ -67,11 +67,13 @@ module.exports = {
             let total = 0;
             let desc = `\n**Inputs**:\n`;
             for (let val of data.result.inputs) {
+                if (!val) return;
                 total += val.prev_out.value;
                 desc += `\n${val.prev_out.addr} - **${fromSat(val.prev_out.value)} BTC**`;
             }
             desc += `\n\n**Outputs**:\n`;
             for (let val of data.result.out) {
+                if (!val) return;
                 desc += `\n${val.addr} - **${fromSat(val.value)} BTC**`;
             }
             desc += `\n\n\n**Total BTC Sent: ${fromSat(total)} BTC**`;
@@ -90,10 +92,8 @@ module.exports = {
     },
 
     getBalanceFromBitcoinAddress: function(address) {
-        console.log(`rrreee`);
         let url = `https://blockchain.info/q/addressbalance/${address}`;
         return snekfetch.get(url).then(result => {
-            console.log(result.body);
             if (result.body == 'Checksum does not validate') return Promise.reject({});
             let data = result.body;
             let balance = parseInt(data);
