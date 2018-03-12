@@ -67,13 +67,13 @@ module.exports = {
             let total = 0;
             let desc = `\n**Inputs**:\n`;
             for (let val of data.result.inputs) {
-                if (!val) return;
+                if (!val.prev_out) return;
                 total += val.prev_out.value;
                 desc += `\n${val.prev_out.addr} - **${fromSat(val.prev_out.value)} BTC**`;
             }
             desc += `\n\n**Outputs**:\n`;
             for (let val of data.result.out) {
-                if (!val) return;
+                if (!val.prev_out) return;
                 desc += `\n${val.addr} - **${fromSat(val.value)} BTC**`;
             }
             desc += `\n\n\n**Total BTC Sent: ${fromSat(total)} BTC**`;
