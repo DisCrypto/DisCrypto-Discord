@@ -4,5 +4,6 @@
   "prefix": "%",
   "shards": 1,
   "etherScanKey": "ether_scan_io_api_key",
-  "infuraKey": "infura_api_key"
+  "infuraKey": "infura_api_key",
+  "dbotspw": ""
 }
