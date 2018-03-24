@@ -14,8 +14,8 @@ module.exports = bot => {
      */
 
     bot.sendServerCount = function() {
-        if (bot.config.sendServerCounts) {
-            var guilds;
+        if (bot.config.dbotspw) {
+            let guilds;
             if (bot.shard) {
                 bot.shard.fetchClientValues('guilds.size').then(g => {
                     guilds = g.reduce((prev, val) => prev + val, 0);
@@ -35,19 +35,6 @@ module.exports = bot => {
                 .end(response => {
                     bot.log(response.body);
                 });
-
-            unirest.post('https://discordbots.org/api/bots/' + bot.user.id + '/stats')
-                .headers({
-                    Authorization: bot.config.dbotsorg,
-                    'Content-Type': 'application/json',
-                })
-                .send({
-                    server_count: guilds,
-                })
-                .end(response => {
-                    bot.log(response.body);
-                });
-
             bot.log('All server counts posted successfully!');
         }
     };

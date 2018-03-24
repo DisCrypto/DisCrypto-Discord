@@ -1,4 +1,4 @@
-const isTravisBuild = process.argv[2] && process.argv[2] === '--travis'
+const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 
 const config = isTravisBuild ? require('./config/config-example.json') : require('./config/config.json');
 
@@ -50,7 +50,7 @@ readdir(srcRoot + '/events/', (err, files) => {
 if (isTravisBuild) process.exit(0);
 
 if (bot.config.token) {
-    bot.login(bot.config.token)
+    bot.login(bot.config.token);
 } else if (process.env.TOKEN) {
     bot.login(process.env.TOKEN);
 } else {
