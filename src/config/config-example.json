@@ -5,5 +5,5 @@
   "shards": 1,
   "etherScanKey": "ether_scan_io_api_key",
   "infuraKey": "infura_api_key",
-  "dbotspw": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQxMTk5Njk1MDY3MDM0NDIzNCIsImJvdCI6dHJ1ZSwiaWF0IjoxNTIwOTAxMTI2fQ.uD5V4HU9T8x-HbnEVqesgakJzyROTF6JIO1fBTHmxmg"
+  "dbotspw": ""
 }
