@@ -126,11 +126,16 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
+        const author = msg.author;
+        const guild = msg.guild;
+
         if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         }
+
         if (msg.channel.type == 'dm') return 5;
-        else if (msg.author.id === (msg.guild.owner.id || null)) {
+
+        if (author && guild && author.id === guild.owner.id) {
             return 5;
         } else if (msg.member.hasPermission('MANAGE_GUILD')) {
             return 4;
