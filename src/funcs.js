@@ -135,7 +135,7 @@ module.exports = bot => {
 
         if (msg.channel.type == 'dm') return 5;
 
-        if (author && guild && author.id === guild.owner.id) {
+        if (author && guild && guild.owner && author.id === guild.owner.id) {
             return 5;
         } else if (msg.member.hasPermission('MANAGE_GUILD')) {
             return 4;
