@@ -15,6 +15,9 @@ module.exports = {
         "node": true,
         "es6": true
     },
+    "globals": {
+      "srcRoot": false
+    },
     "rules": {
         "no-console":0,
         "no-unused-vars": 1,

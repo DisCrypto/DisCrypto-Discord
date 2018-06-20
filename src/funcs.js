@@ -1,8 +1,6 @@
 const isTravisBuild = process.argv[2] && process.argv[2] === '--travis';
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(srcRoot + '/data/servers.sqlite');
-const fs = require('fs');
-const unirest = require('unirest');
 const snekfetch = require('snekfetch');
 const Discord = require('discord.js');
 
@@ -13,31 +11,6 @@ module.exports = bot => {
      * Server Related Functions
      */
 
-    bot.sendServerCount = function() {
-        if (bot.config.dbotspw) {
-            let guilds;
-            if (bot.shard) {
-                bot.shard.fetchClientValues('guilds.size').then(g => {
-                    guilds = g.reduce((prev, val) => prev + val, 0);
-                }).catch(bot.error);
-            } else {
-                guilds = bot.guilds.size;
-            }
-
-            unirest.post('https://bots.discord.pw/api/bots/' + bot.user.id + '/stats')
-                .headers({
-                    Authorization: bot.config.dbotspw,
-                    'Content-Type': 'application/json',
-                })
-                .send({
-                    server_count: guilds,
-                })
-                .end(response => {
-                    bot.log(response.body);
-                });
-            bot.log('All server counts posted successfully!');
-        }
-    };
 
     bot.syncServers = function() {
         db.serialize(() => {

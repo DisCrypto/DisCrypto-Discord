@@ -5,6 +5,7 @@ const config = isTravisBuild ? require('./config/config-example.json') : require
 const path = require('path');
 global.srcRoot = path.resolve(__dirname);
 
+const DBL = require("dblapi.js");
 
 const Discord = require('discord.js');
 const bot = new Discord.Client(config.opts);
@@ -12,6 +13,23 @@ bot.config = config;
 
 require('./funcs.js')(bot);
 const readdir = require('fs').readdir;
+
+if (config.dbotspw) {
+
+    const dbl = new DBL(config.dbotspw, bot);
+
+    dbl.on("posted", () => {
+        return console.log('All server counts posted successfully!');
+    });
+
+    dbl.on("error", (err) => {
+        return console.error(err);
+    });
+
+    console.log("Posting server counts...");
+} else {
+    console.log('No Discord Bot List token was found.');
+}
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
