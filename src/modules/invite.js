@@ -13,7 +13,7 @@ module.exports = {
             .setTitle(`Bot Resources`)
             .setThumbnail(bot.user.displaytAvatarURL)
             .setColor(`GOLD`)
-            .addField(`Bot Invite`, `[Here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot)`,true)
+            .addField(`Bot Invite`, `[Here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=16384&scope=bot)`,true)
             .addField(`Support Server`, `[Here](https://discord.gg/Xg5V8mn)`,true);
 
         message.channel.send(emb);

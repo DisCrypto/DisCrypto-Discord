@@ -50,7 +50,7 @@ module.exports = {
             if (gName != "This DM")  message.channel.send(`Sending you commands in DM...`);
 
             let text = `**${gName}'s prefix is ${prefix}**\n\n` +
-                       `\nInvite this bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot)\n\n` +
+                       `\nInvite this bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=16384&scope=bot)\n\n` +
                        `**Command List**\n` +
                        `Use \`help [command] \` to get more info on a specific command \n`+
                        `For example,  \`help scan\`\n\n` +
