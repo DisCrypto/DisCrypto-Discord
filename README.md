@@ -9,7 +9,7 @@
 
 [![Bot Badge](https://botsfordiscord.com/api/v1/bots/302555306603446283/embed)](https://botsfordiscord.com)-->
 
-Invite me! https://discordapp.com/api/oauth2/authorize?client_id=411996950670344234&permissions=0&scope=bot
+Invite me! https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=16384&scope=bot
 
 # Installation
 
