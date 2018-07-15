@@ -47,7 +47,7 @@ module.exports = {
             // help for all
             let gName = "";
             message.guild ? gName = message.guild.name : gName = `This DM`;
-            if (gName !== "This DM" && message.args[0].toLowerCase() === 'dm') gName = 'This DM';
+            if (gName !== "This DM" && message.args[0] && message.args[0].toLowerCase() === 'dm') gName = 'This DM';
 
             if (gName == "This DM")  message.channel.send(`Sending you commands in DM...`);
 
