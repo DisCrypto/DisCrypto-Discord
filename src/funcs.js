@@ -99,22 +99,20 @@ module.exports = bot => {
     };
 
     bot.permLevel = function(msg) {
-        const author = msg.author;
-        const guild = msg.guild;
+        const {author, guild, member} = msg;
 
         if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         }
-
         if (msg.channel.type == 'dm') return 5;
 
         if (author && guild && guild.owner && author.id === guild.owner.id) {
             return 5;
-        } else if (msg.member.hasPermission('MANAGE_GUILD')) {
+        } else if (member.hasPermission('MANAGE_GUILD')) {
             return 4;
-        } else if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) {
+        } else if (member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')) {
             return 3;
-        } else if (msg.member.hasPermission('MANAGE_MESSAGES')) {
+        } else if (member.hasPermission('MANAGE_MESSAGES')) {
             return 2;
         } else {
             return 1;
@@ -163,7 +161,7 @@ module.exports = bot => {
             let data = c.body[0];
             bot.user.setPresence({
                 game: {
-                    name: `${data.symbol} $${data.price_usd}`,
+                    name: `${data.symbol} $${data.price_usd} | @DisCrypto help`,
                     type: 3,
                 },
             });
