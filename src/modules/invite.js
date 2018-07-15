@@ -8,10 +8,9 @@ module.exports = {
     permission: 1,
     help: 'Generate support server/bot invite links',
     main: async function (bot, message) {
-        console.log(`call`);
         let emb = new Discord.RichEmbed()
             .setTitle(`Bot Resources`)
-            .setThumbnail(bot.user.displaytAvatarURL)
+            .setThumbnail(bot.user.displayAvatarURL)
             .setColor(`GOLD`)
             .addField(`Bot Invite`, `[Here](https://discordapp.com/oauth2/authorize?client_id=411996950670344234&permissions=16384&scope=bot)`,true)
             .addField(`Support Server`, `[Here](https://discord.gg/Xg5V8mn)`,true);
