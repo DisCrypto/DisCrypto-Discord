@@ -104,7 +104,7 @@ module.exports = bot => {
         if (bot.config.owner.indexOf(msg.author.id) > -1) {
             return 6;
         }
-        if (msg.channel.type == 'dm') return 5;
+        if (msg.channel.type == 'dm' || !member) return 1;
 
         if (author && guild && guild.owner && author.id === guild.owner.id) {
             return 5;

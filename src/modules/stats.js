@@ -2,10 +2,6 @@ const Discord = require('discord.js');
 const os = require('os');
 const osu = require('node-os-utils');
 
-let helper = {};
-require('./../funcs')(helper);
-
-
 module.exports = {
     name: 'stats',
     type: 'core',

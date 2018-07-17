@@ -68,13 +68,13 @@ module.exports = async function(msg, bot, channel) {
                 try {
                     msg.args = msg.content.split(/\s+/g);
                     msg.content = msg.content.substring(msg.content.indexOf(' ') + 1, msg.content.length) || null;
-                    var command = msg.args.shift().slice(prefix.length).toLowerCase();
+                    let command = msg.args.shift().slice(prefix.length).toLowerCase();
                     if ((command == `setprefix` || command == `prefix`) && msg.channel.type == 'dm') {
                         msg.channel.send(`Those commands are not available in DM.`);
                         return;
                     }
-                    var cmd = bot.commands.get(command);
-                    var perms = bot.permLevel(msg);
+                    let cmd = bot.commands.get(command);
+                    let perms = bot.permLevel(msg);
 
                     if (!cmd) {
                         return;
